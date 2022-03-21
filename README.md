@@ -1,5 +1,4 @@
-# Tesis para obtener el título de Ingeniero Estadístico
-### Universidad Nacional de Ingeniería, Lima - Perú
+# Tesis para obtener el título de Ingeniero Estadístico (Universidad Nacional de Ingeniería, Lima - Perú)
 
 
 El presente repositorio fue creado con la finalidad de presentar el material empleado en el ańalisis. 
