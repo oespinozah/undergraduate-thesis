@@ -1,2 +1,1 @@
-# Tesis de Pre-Grado (Universidad Nacional de Ingeniería)
-Tesis para obtener el título en Ingeniero Estadístico
+# Tesis para obtener el título de Ingeniero Estadístico (Universidad Nacional de Ingeniería, Perú)
