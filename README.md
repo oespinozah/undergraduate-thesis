@@ -5,7 +5,8 @@
 El presente repositorio fue creado con la finalidad de presentar el material empleado en el ańalisis. 
 
 
-La carpeta scripts contiene (estos son presentados en formato MarkDown)
+La carpeta scripts contiene presentado en formato MarkDown los códigos y sus salídas
+
 La carpeta src contiene las funciones que fueron definidas y usadas en los scripts
 
 
