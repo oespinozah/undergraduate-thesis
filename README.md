@@ -9,7 +9,9 @@ La carpeta scripts contiene presentado en formato MarkDown los códigos y sus sa
 La carpeta src contiene las funciones que fueron definidas y usadas en los scripts
 
 
-De igual forma, también se presenta el código en .txt usando para redactar la tesis en LaTex (usando el formato indicado a la fecha por la facultad)
+De igual forma, también se presenta el 
+[codigo](https://www.google.com) en .txt usando para redactar la tesis en LaTex (usando el formato indicado a la fecha por la facultad)
+
 
 Dada la privacidad de los datos, estos no se encuentran cargados en el repositorio
 
