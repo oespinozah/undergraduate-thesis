@@ -1,0 +1,75 @@
+---
+title: "40-model_inference_canchayllo"
+output: html_document
+---
+
+```{r}
+library(spatstat)
+library(sf)
+library(mgcv)
+library(splines)
+library(pROC)
+library(mgcv)
+library(caret)
+```
+
+
+```{r}
+git_path <- function() {
+  system('git rev-parse --show-toplevel', intern = TRUE)
+}
+proj_path <- git_path()
+source(file.path(proj_path,"src","kml_df.R"))
+source(file.path(proj_path,"src","data_ppp.R"))
+source(file.path(proj_path,"src","win_ppp.R"))
+```
+
+
+```{r}
+datos_consolidados <- readRDS(file.path(proj_path, "data", "processed","datos_canchayllo_poblacion.rds"))
+datos_muestra <- readRDS(file.path(proj_path,"data","processed","datos_canchayllo_muestra.rds"))
+w <- readRDS(file.path(proj_path,"data","processed","pesos_canchayllo.rds"))
+```
+
+
+```{r}
+set.seed(2022)
+inTrain <- createDataPartition(y = datos_muestra$resultado,p=0.7,list = FALSE)
+train <- datos_muestra[inTrain,]
+test <- datos_muestra[-inTrain,]
+```
+
+
+```{r}
+modelo <- mgcv::gam(resultado~s(longitud,latitud, k=2) + perros3,
+                           family = binomial(link="logit"),
+                           data=train,
+                           weights = w[inTrain])
+
+auc(train$resultado,predict(modelo))
+auc(test$resultado,predict(modelo, test))
+summary(modelo)
+plot(roc(train$resultado,predict(modelo)))
+```
+
+```{r}
+plot(cbind(train$resultado,predict(modelo)))
+grid()
+plot(cbind(test$resultado,predict(modelo,test)))
+grid()
+```
+
+
+```{r}
+sum(predict(modelo,
+        datos_consolidados[datos_consolidados$participa == "no participó",])  >= -1.585413)
+sum(predict(modelo,
+        datos_consolidados[datos_consolidados$participa == "no participó",])  < -1.585413)
+table(datos_muestra$resultado)
+(61 + 19)/327
+```
+
+```{r}
+(19/108)*((139+108)/(61+19))
+```
+

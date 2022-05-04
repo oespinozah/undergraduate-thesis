@@ -1,0 +1,29 @@
+---
+title: "Prevalencia"
+output: html_document
+---
+
+```{r}
+git_path <- function() {
+  system('git rev-parse --show-toplevel', intern = TRUE)
+}
+proj_path <- git_path()
+source(file.path(proj_path,"src","kml_df.R"))
+source(file.path(proj_path,"src","kml_df.R"))
+```
+
+### Leyendo la bases limpias
+
+```{r}
+proj_path <- git_path()
+datos_consolidados <- readRDS(file.path(proj_path, "data", "processed","datos_canchayllo_poblacion.rds"))
+datos_muestra <- readRDS(file.path(proj_path,"data","processed","datos_canchayllo_muestra.rds"))
+```
+
+### Calculamos la prevalencia y sus intervalos de confianza
+
+```{r}
+table(datos_muestra$resultado)
+19/108
+```
+

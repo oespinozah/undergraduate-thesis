@@ -1,0 +1,135 @@
+---
+title: "Intensidad"
+output: html_document
+---
+
+```{r, warning = FALSE}
+git_path <- function() {
+  system('git rev-parse --show-toplevel', intern = TRUE)
+}
+proj_path <- git_path()
+source(file.path(proj_path,"src","kml_df.R"))
+source(file.path(proj_path,"src","data_ppp.R"))
+source(file.path(proj_path,"src","win_ppp.R"))
+source(file.path(proj_path,"src","evaluate.R"))
+source(file.path(proj_path,"src","inference.R"))
+```
+
+### Leyendo la bases limpias y cargando los paquetes
+
+```{r, warning = FALSE}
+library(spatstat)
+library(sf)
+library(mgcv)
+library(splines)
+library(pROC)
+library(mgcv)
+datos_consolidados <- readRDS(file.path(proj_path, "data", "processed","datos_canchayllo_poblacion.rds"))
+datos_muestra <- readRDS(file.path(proj_path,"data","processed","datos_canchayllo_muestra.rds"))
+canchayllo_household <- readRDS(file.path(proj_path,"data","cleaned","canchayllo_household.rds"))
+canchayllo_household_df <- kml_df(canchayllo_household)
+win <- win_ppp(datos_consolidados,canchayllo_household_df)
+consolidados_ppp <- data_ppp(datos_consolidados,win)
+muestra_ppp <- data_ppp(datos_muestra,win)
+train_consolidados_ppp <- readRDS(file.path(proj_path,"data","processed","train_canchayllo_poblacion_ppp.rds"))
+train_muestra_ppp <- readRDS(file.path(proj_path,"data","processed","train_canchayllo_muestra_ppp.rds"))
+set.seed(1234)
+ss <- sample(1:22,7,replace=F)
+```
+
+# Intensidad poblacional
+
+```{r}
+qua <- quadrats(consolidados_ppp, 5, 5)
+ecm_nB_train <- c()
+ecm_nB_test <- c()
+for (i in 2:50) {
+  train_fit <- ppm(train_consolidados_ppp~ s(x,y,k=i), use.gam=TRUE)
+  res2e <- residuals(train_fit)
+  resQ <- integral(res2e, qua)
+  ecm_nB_train <- cbind(ecm_nB_train,mean(resQ[-ss]^2))
+  ecm_nB_test <- cbind(ecm_nB_test,
+                       mean((quadratcount(consolidados_ppp,
+                                          nx=5, ny=5)[ss] + resQ[ss])^2))
+}
+plot(c(2:50),ecm_nB_train,ylim = c(0,200),type = "l",col="red",
+     xlab="N° de funciones base", ylab="Residuales")
+points(c(2:50),ecm_nB_test,type = "l",col="blue")
+grid()
+```
+
+##### Menor número de funciones base que genera el menor error en el grupo test
+
+```{r}
+print(which.min(ecm_nB_test)+1)
+consolidado_lamba_fit <- ppm(train_consolidados_ppp~s(x,y,k=40),
+                             use.gam=TRUE)
+summary(consolidado_lamba_fit)
+saveRDS(consolidado_lamba_fit,file.path(proj_path,"data","processed",
+                                           "consolidado_lamba_fit_canchayllo.rds"))
+```
+
+###  Logaritmo de lambda poblacional
+
+```{r}
+loglambda_p <- log(predict(consolidado_lamba_fit,
+                           locations=data.frame(x=muestra_ppp$x,
+                                                y=muestra_ppp$y)))
+saveRDS(loglambda_p,file.path(proj_path,"data","processed", "loglambda_p_canchayllo.rds"))
+```
+
+## Intensidad muestral
+
+```{r}
+qua <- quadrats(muestra_ppp, 5, 5)
+ecm_nB_train <- c()
+ecm_nB_test <- c()
+for (i in 2:50) {
+  train_fit <- ppm(train_muestra_ppp~ s(x,y,k=i),
+                        offset=loglambda_p,
+                        use.gam=TRUE)
+  res2e <- residuals(train_fit)
+  resQ <- integral(res2e, qua)
+  ecm_nB_train <- cbind(ecm_nB_train,mean(resQ[-ss]^2))
+  ecm_nB_test <- cbind(ecm_nB_test,
+                       mean((quadratcount(muestra_ppp,
+                                          nx=5, ny=5)[ss] + resQ[ss])^2))
+}
+plot(c(2:50),ecm_nB_train,ylim = c(0,200),type = "l",col="red",
+     xlab="N° de funciones base", ylab="Residuales")
+points(c(2:50),ecm_nB_test,type = "l",col="blue")
+grid()
+```
+
+##### Menor número de funciones base que genera el menor error en el grupo test
+
+```{r}
+print(which.min(ecm_nB_test)+1)
+muestra_lamba_fit <- ppm(train_muestra_ppp ~ s(x,y,k=24),
+                        offset=loglambda_p,
+                        use.gam=TRUE)
+summary(muestra_lamba_fit)
+```
+
+###  Logaritmo de lambda muestral
+
+```{r}
+loglambda <- log(predict(muestra_lamba_fit,
+                         locations=data.frame(x=muestra_ppp$x,
+                                              y=muestra_ppp$y)))
+saveRDS(loglambda,file.path(proj_path,"data","processed", "loglambda_canchayllo.rds"))
+```
+
+# Pesos
+
+```{r}
+w <- exp(loglambda_p - loglambda)
+```
+
+### Guardando los pesos
+
+```{r}
+saveRDS(w,file.path(proj_path,"data","processed","pesos_canchayllo.rds"))
+```
+
+

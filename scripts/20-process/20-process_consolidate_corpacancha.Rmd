@@ -1,0 +1,83 @@
+---
+title: "Consolidaciòn de la base de datos"
+output: html_document
+prerequisites:
+  - corpacancha_household.rds
+  - data/cleaned/BaseCorpacancha.rds
+target: 
+  - data/processed/consolidados_corpacancha.rds
+---
+
+```{r}
+git_path <- function() {
+  system('git rev-parse --show-toplevel', intern = TRUE)
+}
+proj_path <- git_path()
+source(file.path(proj_path,"src","kml_df.R"))
+```
+
+## Leyendo la base y las coordenadas limpias y cargando los paquetes
+
+```{r}
+library(sf)
+library(lwgeom)
+proj_path <- git_path()
+datos_personas <- readRDS(file.path(proj_path,"data","cleaned","BaseCorpacancha.rds"))
+corpacancha_household <- readRDS(file.path(proj_path,"data","cleaned","corpacancha_household.rds"))
+corpacancha_household_df <- kml_df(corpacancha_household)
+```
+
+
+## Consolidamos en una base
+
+```{r}
+datos_consolidados <- merge(datos_personas,corpacancha_household_df,
+                            by="ncasa", all.x=TRUE)
+datos_consolidados <- datos_consolidados[!is.na(datos_consolidados$longitud),]
+#Extraemos las coordenadas para el centro de EsSalud
+#EsSalud <- corpacancha_household_df[184,]
+datos_consolidados$longitud <- as.numeric(datos_consolidados$longitud)
+datos_consolidados$latitud <- as.numeric(datos_consolidados$latitud)
+```
+
+# Dividimos en población y muestra
+
+```{r}
+#Extraemos otra base solo con los que participaron en el estudio VIRSEL
+datos_virsel <- datos_consolidados[
+  datos_consolidados$virit_wb=="Tiene resultado de WB",
+  c("ncasa","paciente","sexpac","edapac","rango_edad","nperros","condperro",
+    "perros3","virit_orden","virit_resultado_wb","longitud","latitud") ]
+#Vamos a terminar de corregir el orden en el estudio VIRSEL
+datos_virsel <- datos_virsel[order(datos_virsel$virit_orden),]
+datos_virsel$virit_orden <- c(1:nrow(datos_virsel))
+#Ordenamos los factores
+datos_virsel$virit_resultado_wb <- factor(as.numeric(
+  datos_virsel$virit_resultado_wb == "positivo"),
+  labels = c("negativo","positivo"),
+  levels = c(0,1))
+datos_virsel$sexpac <- factor(as.numeric(
+  datos_virsel$sexpac == "Masculino"),
+  labels = c("femenino","masculino"),
+  levels = c(0,1))
+datos_consolidados$sexpac <- factor(as.numeric(
+  datos_consolidados$sexpac == "Masculino"),
+  labels = c("femenino","masculino"),levels = c(0,1))
+datos_virsel$nperros_factor <- factor(datos_virsel$nperros)
+datos_consolidados$nperros_factor <- factor(datos_consolidados$nperros)
+
+datos_virsel$virit_resultado_wb <- factor(as.numeric(datos_virsel$virit_resultado_wb == "positivo"),
+                                          labels = c("negativo","positivo"),levels = c(0,1))
+datos_virsel$sexpac <- factor(as.numeric(datos_virsel$sexpac == "masculino"),
+                              labels = c("femenino","masculino"),levels = c(0,1))
+datos_consolidados$sexpac <- factor(as.numeric(datos_consolidados$sexpac == "masculino"),
+                                    labels = c("femenino","masculino"),levels = c(0,1))
+datos_virsel$nperros_factor <- factor(datos_virsel$nperros)
+datos_consolidados$nperros_factor <- factor(datos_consolidados$nperros)
+```
+
+
+```{r}
+saveRDS(datos_consolidados,file.path(proj_path,"data","processed","datos_corpacancha_poblacion.rds"))
+saveRDS(datos_virsel,file.path(proj_path,"data","processed","datos_corpacancha_muestra.rds"))
+```

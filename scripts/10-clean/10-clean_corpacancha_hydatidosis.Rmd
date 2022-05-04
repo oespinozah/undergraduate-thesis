@@ -1,0 +1,142 @@
+---
+title: "Limpieza de base de datos de la población Corpacancha"
+output: html_document
+prerequisites:
+  - data/raw/BaseJunin.xls
+target: 
+  - data/cleaned/BaseJunin.csv
+---
+
+```{r}
+git_path <- function() {
+  system('git rev-parse --show-toplevel', intern = TRUE)
+}
+```
+
+## Leyendo la base de Junin y cargando los paquetes
+
+```{r}
+library(dplyr)
+library(readxl)
+proj_path <- git_path()
+base <- read_excel(file.path(proj_path,"data","raw","BaseJunin.xls"))
+```
+
+### Estamos quitando a los pacientes que no registran un código de pueblo y seleccionamos solo a los que pertenecen a Corpacancha (en la base,tienen Corpancha como código de pueblo).
+
+```{r}
+base <- base[!is.na(base$codpueblo),]
+base <- base[base$codpueblo == "Corpancha",]
+```
+
+## Realizamos la limpieza de la base de datos y la imputación de los datos perdidos
+
+```{r}
+datos_personas <- base[,c("paciente","sexpac","edapac","nperros","condperro",
+                          "ncasa","virit_wb","virit_date_wb","virit_codlab",
+                          "virit_resultado_wb","hycom_particip","id_hycom",
+                          "hycom_resultado_eco","hycom_resultado_wb",
+                          "hycom_tac_posit")]
+rm(base)
+datos_personas <- datos_personas[datos_personas$ncasa!="XXX",]
+datos_personas <- datos_personas[datos_personas$ncasa!="YYY",]
+datos_personas$ncasa <- as.numeric(datos_personas$ncasa)
+hycom_hid <- c(rep(NA,nrow(datos_personas)))
+for (i in 1:nrow(datos_personas)) {
+  eco <- 0
+  wb <- 0
+  tac <- 0
+  if (datos_personas$hycom_particip[i]=="Sí participó") {
+    if (!is.na(datos_personas$hycom_resultado_eco[i])) {
+      if (datos_personas$hycom_resultado_eco[i]=="Positivo") {
+        eco <- 1
+      }
+    }
+    if (!is.na(datos_personas$hycom_resultado_wb[i])) {
+      if (datos_personas$hycom_resultado_wb[i]=="Positivo") {
+        wb <- 1
+      }
+    }
+    if (!is.na(datos_personas$hycom_tac_posit[i])) {
+      if (datos_personas$hycom_tac_posit[i]=="Positivo a al menos 1 organo") {
+        tac <- 1
+      }
+    }
+    if (eco+wb+tac > 0) {
+      hycom_hid[i] <- "positivo"
+    } else {
+      hycom_hid[i] <- "negativo"
+    }
+  }
+  rm(eco,wb,tac)  
+}
+virit_orden <- c(rep(NA,nrow(datos_personas)))
+for (i in 1:nrow(datos_personas)) {
+  if (!is.na(datos_personas$virit_codlab[i])) {
+    virit_orden[i] <- as.numeric(substr(datos_personas$virit_codlab[i],6,9))-
+      (as.numeric(min(substr(datos_personas$virit_codlab[
+        !is.na(datos_personas$virit_codlab)],6,9)))-1)
+  }
+}
+hycom_orden <- c(rep(NA,nrow(datos_personas)))
+for (i in 1:nrow(datos_personas)) {
+  if (!is.na(datos_personas$id_hycom[i])) {
+    hycom_orden[i] <- as.numeric(substr(datos_personas$id_hycom[i],3,5))
+  }
+}
+datos_personas <- as.data.frame(cbind(datos_personas,hycom_hid,virit_orden,
+                                      hycom_orden))
+hid_corp <- c(rep(NA,nrow(datos_personas)))
+for (i in 1:nrow(datos_personas)) {
+  if (!is.na(datos_personas$virit_resultado_wb[i]) | 
+      !is.na(datos_personas$hycom_hid[i])) {
+    hid_virsel <- 0
+    hid_hycom <- 0
+    if (!is.na(datos_personas$virit_resultado_wb[i])) {
+      if (datos_personas$virit_resultado_wb[i]=="positivo") {
+        hid_virsel <- 1
+      }
+    }
+    if (!is.na(datos_personas$hycom_hid[i])) {
+      if (datos_personas$hycom_hid[i]=="positivo") {
+        hid_hycom <- 1
+      }
+    }
+    if (hid_virsel+hid_hycom > 0) {
+      hid_corp[i] <- "positivo"
+    } else {
+      hid_corp[i] <- "negativo"
+    }
+    rm(hid_virsel,hid_hycom) 
+  }
+}
+datos_personas <- as.data.frame(cbind(datos_personas,hid_corp))
+rm(hycom_hid,i,virit_orden,hycom_orden,hid_corp)
+datos_personas <-datos_personas[,c("paciente","sexpac","edapac","nperros",
+                                   "condperro","ncasa","virit_wb","virit_orden",
+                                   "virit_resultado_wb","hycom_particip",
+                                   "hycom_orden","hycom_hid","hid_corp")]
+datos_personas$virit_wb[
+  is.na(datos_personas$virit_wb)] <-"No tiene resultado de WB"
+datos_personas$edapac[is.na(datos_personas$edapac)] <- 
+  round(mean(datos_personas$edapac[!is.na(datos_personas$edapac)]),0)
+datos_personas <- datos_personas[datos_personas$edapac>3,]
+rango_edad <- c(rep(NA, nrow(datos_personas)))
+rango_edad[dplyr::between(datos_personas$edapac,0,15)] <- 1
+rango_edad[dplyr::between(datos_personas$edapac,16,30)] <- 2
+rango_edad[dplyr::between(datos_personas$edapac,31,50)] <- 3
+rango_edad[dplyr::between(datos_personas$edapac,51,100)] <- 4
+datos_personas <- cbind(datos_personas,rango_edad)
+rm(rango_edad)
+datos_personas <- datos_personas[datos_personas$ncasa != 28,]
+datos_personas$nperros[is.na(datos_personas$nperros)] <- 0
+datos_personas$perros3 <- as.factor(ifelse(datos_personas$nperros>=3,
+                                 "Al menos 3 perros","Menos de 3 perros"))
+```
+
+
+## Guardamos la base de datos limpia
+
+```{r}
+saveRDS(datos_personas,file.path(proj_path,"data","cleaned","BaseCorpacancha.rds"))
+```

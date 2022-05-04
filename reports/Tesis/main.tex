@@ -1,0 +1,219 @@
+%%% PLANTILLA DISEÑADA PARA LA REALIZACIÓN DE TESIS DE PRE-GRADO DE LA FIEECS
+%% AUTOR DE LA PLANTILLA: Oswaldo Espinoza-Hurtado
+
+\documentclass[12pt,a4paper,oneside]{report}
+
+\usepackage[T1]{fontenc}
+\usepackage{times}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorlinks=false]{hyperref}
+\usepackage{multicol}
+\usepackage{longtable}
+\usepackage[refpages]{gloss}
+\usepackage{float}
+\usepackage{anysize}
+\usepackage{appendix}
+\usepackage{lscape}
+\usepackage{pdflscape}
+\usepackage{multirow}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{setspace}
+\usepackage{enumerate} 
+
+\usepackage[spanish]{babel}
+\usepackage{apacite} 
+
+\usepackage{graphicx}
+\usepackage[svgnames]{xcolor}
+\usepackage{booktabs}
+\usepackage{lscape}
+\usepackage{multirow}
+\usepackage{afterpage}
+\pagestyle{plain}
+\usepackage{anysize}
+\usepackage{here}
+
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{mathrsfs}
+
+\usepackage[spanish,onelanguage,ruled,vlined,linesnumbered,noresetcount]{algorithm2e}
+
+\makeatletter
+\newcommand{\AlgoResetCount}{\renewcommand{\@ResetCounterIfNeeded}{\setcounter{AlgoLine}{0}}}
+\newcommand{\AlgoNoResetCount}{\renewcommand{\@ResetCounterIfNeeded}{}}
+\newcounter{AlgoSavedLineCount}
+\newcommand{\AlgoSaveLineCount}{\setcounter{AlgoSavedLineCount}{\value{AlgoLine}}}
+\newcommand{\AlgoRestoreLineCount}{\setcounter{AlgoLine}{\value{AlgoSavedLineCount}}}
+\makeatother
+
+\usepackage{enumitem}
+
+\usepackage{bigints}
+\newcommand\dummy{\frac{a}{c}\,\mathrm{d}P}
+
+\usepackage{subcaption}
+
+
+\begin{document}
+
+%----------------------------------------------------------------------------------------
+%	CONFIGURACION
+%----------------------------------------------------------------------------------------
+
+
+
+\marginsize{2.5cm}{2.5cm}{3.0cm}{2.5cm}
+\renewcommand*{\contentsname}{ÍNDICE}
+\renewcommand*{\listtablename}{Índice de tablas}
+\renewcommand*{\listfigurename}{Índice de figuras}
+\renewcommand{\baselinestretch}{1.0}
+\renewcommand{\appendixname}{Anexo}
+\renewcommand{\appendixtocname}{Anexos}
+\renewcommand{\appendixpagename}{Anexos}
+\renewcommand{\thetable}{\arabic{chapter}.\arabic{table}}
+\renewcommand*{\tablename}{Tabla}
+\renewcommand*{\chaptername}{Capítulo}
+\renewcommand*{\thechapter}{\Roman{chapter}}
+\renewcommand{\thesection}{\arabic{chapter}.\arabic{section}}
+\renewcommand{\figurename}{Figura}
+\renewcommand{\thefigure}{\arabic{chapter}.\arabic{figure}}
+\renewcommand{\theequation}{\arabic{chapter}.\arabic{equation}}
+
+
+%----------------------------------------------------------------------------------------
+%	PORTADA
+%----------------------------------------------------------------------------------------
+
+\begin{titlepage}
+ 
+\begin{center}
+ 
+ {\Large \bf UNIVERSIDAD NACIONAL DE INGENIERÍA}\\[0.5cm]
+ 
+{\bf FACULTAD DE INGENIERÍA ECONÓMICA, ESTADÍSTICA Y CIENCIAS SOCIALES}\\[1.5cm]
+
+
+\begin{center}
+\includegraphics[width=0.3\textwidth]{imagenes/uni_logo.png}
+\end{center}
+
+\vspace{1cm}
+\title{Tesis} % titulo de tu tesis para latex
+
+{\bf \large TESIS}\\[0.5cm]
+
+{\bf \large ESTIMACIÓN DE LA PREVALENCIA DE HIDATIDOSIS HUMANA CONSIDERANDO LA DISTRIBUCIÓN ESPACIAL EN EL CENTRO POBLADO DE CORPACANCHA, JUNÍN - PERÚ}\\[0.5cm] % titulo de tu tesis
+
+{PARA OBTENER EL TÍTULO PROFESIONAL DE INGENIERO ESTADÍSTICO}\\[1cm]
+ 
+{{\bf Elaborado por}:\\ BACH. OSWALDO GABRIEL ERNESTO ESPINOZA HURTADO}\\[1cm] % nombres del autor o autores
+
+{{\bf Asesor}:\\ MAG. CHRISTIAN AMAO SUXO}\\[0.5cm] % nombres del asesor
+%{{\bf Asesor externo}:\\ PH.D. ERICK CHACÓN MONTALVAN}\\[1cm] % nombres del segundo asesor
+
+{\large Lima, Junio, 2022}\\[0.2cm] % fecha de sustentación
+{PERÚ}
+\end{center}
+
+\end{titlepage}
+
+\newpage
+\newpage
+%----------------------------------------------------------------------------------------
+%	Dedicatoria
+%----------------------------------------------------------------------------------------
+
+\begin{titlepage}
+
+\begin{flushright}
+{\large \bf DEDICATORIA}
+\\
+\textit{A cada una de las personas que me acompañaron en este trayecto; tanto familiares, como amistades, profesores y mentores. A quienes siguen y a la memoria de quienes ya no están; en especial a mi abuelo, el maestro mecánico Luis Ernesto Hurtado Chiscul (Q.E.P.D.).} % agregar tu dedicatoria
+\\
+\textit{}
+\end{flushright}
+\end{titlepage}
+
+%----------------------------------------------------------------------------------------
+%	Agradecimientos
+%----------------------------------------------------------------------------------------
+
+\begin{titlepage}
+
+\begin{flushright}
+{\large \bf AGRADECIMIENTOS}\\
+\end{flushright}
+\textit{Al profesor y asesor externo en esta investigación PhD. Erick Chacón, quien me asesoró y guió en la formulación y elaboración de la presente investigación.\\
+Al profesor y asesor MSc. Christian Amao, quien me dio las herramientas básicas para introducirme en la redacción científica y aportó de forma crítica en la redacción de esta investigación.\\
+Al equipo de investigación en Hidatidosis conformado por el PhD. MD. Saul Santivañez, la MSc. Karina Bardales,  el BVetMed. Cesar Sedano y el BVetMed. Raul Enriquez , quienes me dieron asesoría temática y proporcionaron la base de datos en coordinación con área del Centro de Datos del Centro de Estudios Clínicos del Centro de Salud Global de la Universidad Peruana Cayetano Heredia.\\
+Al fondo EULAC, el cual por medio de CONCYTEC (PRO CIENCIA) financió la presente investigación.
+} 
+
+\end{titlepage}
+
+\input{00A_Resumen}
+
+%----------------------------------------------------------------------------------------
+%	TABLA DE CONTENIDOS
+%---------------------------------------------------------------------------------------
+
+\tableofcontents
+\cleardoublepage
+\listoftables
+\listoffigures
+
+\makegloss
+\newpage
+
+%----------------------------------------------------------------------------------------
+%	INTRODUCCIÓN
+%----------------------------------------------------------------------------------------
+\input{00B_Introduccion}
+%----------------------------------------------------------------------------------------
+%	PLANTEAMIENTO DE LA INVESTIGACIÓN
+%----------------------------------------------------------------------------------------
+\input{01_PlanteamientoDelProblema}
+%----------------------------------------------------------------------------------------
+%	MARCO TEORICO
+%----------------------------------------------------------------------------------------
+\input{02_MarcoTeoricoConceptual}
+%----------------------------------------------------------------------------------------
+%	MARCO METODOLÓGICO
+%----------------------------------------------------------------------------------------
+\input{03_MarcoMetodologico}
+%----------------------------------------------------------------------------------------
+%	ANÁLISIS Y RESULTADOS
+%----------------------------------------------------------------------------------------
+\input{04_AnalisisYResultados}
+%----------------------------------------------------------------------------------------
+%	CONCLUSIONES Y RECOMENDACIONES
+%----------------------------------------------------------------------------------------
+\input{05_ConclusionesYRecomendaciones}
+%----------------------------------------------------------------------------------------
+%	REFERENCIA BIBLIOGRÁFICA
+%----------------------------------------------------------------------------------------
+\renewcommand*{\bibname}{REFERENCIA BIBLIOGRÁFICA}
+\bibliography{references.bib}
+\bibliographystyle{apacite}
+%\bibliographystyle{acm} % estilo de la bibliografia
+%\bibliography{bibliografia} % nombre del archivo .bib
+%\addcontentsline{toc}{chapter}{REFERENCIA BIBLIOGRÁFICA}
+\newpage
+
+
+%----------------------------------------------------------------------------------------
+%	ANEXOS
+%----------------------------------------------------------------------------------------
+\input{06_Anexos}
+
+\end{document} 
+
+
+%http://www.mat.uda.cl/hsalinas/cursos/2008/latex/apuntes12.pdf
+%http://metodos.fam.cie.uva.es/~latex/apuntes/apuntes3.pdf
+%http://metodos.fam.cie.uva.es/~latex/apuntes/apuntes16.pdf

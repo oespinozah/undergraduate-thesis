@@ -1,0 +1,256 @@
+---
+title: "Simulación"
+author: "Oswaldo Espinoza"
+output:
+  html_document: default
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Conceptos Previos
+### Librerias
+En esta parte vamos a presentar las librerias con las que se va a trabajar
+```{r, results='hide', message=FALSE, warning=FALSE}
+library(spatstat)
+library(fields)
+library(mgcv)
+library(psych)
+library(pracma)
+library(splines)
+```
+### Funciones
+La función de intesidad $\lambda(x,y)$ será presentada de la siguiente manera
+$$\lambda(x,y) = c_\lambda \left(1 - \sqrt{\cfrac{a_\lambda(x-h_\lambda)^2 + b_\lambda(y-k_\lambda)^2}{a_\lambda h_\lambda^2+b_\lambda k_\lambda^2}} \right)$$
+
+En el caso de las funciones de riesgo espacial y selección espacial, dado que su valor es un probabilidad y debe estar comprendido entre 0 y 1 entonces estas seguiran la siguiente estructura:
+$$f_\theta(x,y) = \cfrac{1}{1+e^{-\mu_\theta(x,y)}}$$
+$$f_\pi(x,y) = \cfrac{1}{1+e^{-\mu_\pi(x,y)}}$$
+Donde:
+$$\mu(x,y) = \alpha + g_1(x) + g_2(y)$$
+Para la simulación tomaremos:
+$$g(x)=c+a (x-h)^2 + b(y-k)^2$$
+
+Esto nos nos permite conocer la función de intesidad para puntos marcados $\lambda_\theta(x,y)$, puntos en la muestra $\lambda_\pi(x,y)$ y puntos marcados en la muestra $\lambda_{\theta_\pi}(x,y)$
+
+$$
+\lambda_{\theta}(x,y) = \cfrac{c_\lambda}{(1+\exp{\left[-\mu_\theta(x,y) \right]})} \left(1 - \sqrt{\cfrac{a_\lambda(x-h_\lambda)^2 + b_\lambda(y-k_\lambda)^2}{a_\lambda h_\lambda^2+b_\lambda k_\lambda^2}} \right)
+$$
+$$
+\lambda_{\pi}(x,y) = \cfrac{c_\lambda}{(1+\exp{\left[-\mu_\pi(x,y) \right]})} \left(1 - \sqrt{\cfrac{a_\lambda(x-h_\lambda)^2 + b_\lambda(y-k_\lambda)^2}{a_\lambda h_\lambda^2+b_\lambda k_\lambda^2}} \right)
+$$
+$$
+\lambda_{\theta_\pi}(x,y) = \cfrac{c_\lambda}{(1+\exp{\left[-\mu_\theta(x,y) \right]})(1+\exp{\left[-\mu_\pi(x,y) \right]})} \left(1 - \sqrt{\cfrac{a_\lambda(x-h_\lambda)^2 + b_\lambda(y-k_\lambda)^2}{a_\lambda h_\lambda^2+b_\lambda k_\lambda^2}} \right)
+$$
+
+## Densidad poblacional heterogénea, riesgo espacial variable, muestreo aleatorio no homogeneo
+
+#### Funciones
+Dadas las condiciones, las funciones serán definidas de la siguiente manera
+```{r, results='hide', message=FALSE, warning=FALSE}
+lambda_fun <- function(x,y){return(c_lambda-c_lambda*(a_lambda*(x-h_lambda)^2+b_lambda*(y-k_lambda)^2)^0.5/((a_lambda*(h_lambda)^2+b_lambda*(k_lambda)^2)^0.5))}
+
+theta_fun <- function(x,y){
+  return(1/(1+exp(-(c_theta+a_theta* (x-h_theta)^2+b_theta*(y-k_theta)^2))))}
+
+pi_fun <- function(x,y){
+  return(1/(1+exp(-(c_pi+a_pi * (x-h_pi)^2+b_pi*(y-k_pi)^2))))}
+
+lambda_theta_fun <- function(x,y){return((c_lambda-c_lambda*(a_lambda*(x-h_lambda)^2+b_lambda*(y-k_lambda)^2)^0.5/((a_lambda*(h_lambda)^2+b_lambda*(k_lambda)^2)^0.5))*1/(1+exp(-(c_theta+a_theta*(x-h_theta)^2+b_theta*(y-k_theta)^2))))}
+
+lambda_pi_fun <- function(x,y){return((c_lambda-c_lambda*(a_lambda*(x-h_lambda)^2+b_lambda*(y-k_lambda)^2)^0.5/((a_lambda*(h_lambda)^2+b_lambda*(k_lambda)^2)^0.5))* 1/(1+exp(-(c_pi+a_pi*(x-h_pi)^2+b_pi*(y-k_pi)^2))))}
+
+lambda_theta_pi_fun <- function(x,y){return((c_lambda-c_lambda*(a_lambda*(x-h_lambda)^2+b_lambda*(y-k_lambda)^2)^0.5/((a_lambda*(h_lambda)^2+b_lambda*(k_lambda)^2)^0.5))*1/(1+exp(-(c_theta+a_theta*(x-h_theta)^2+b_theta*(y-k_theta)^2)))*1/(1+exp(-(c_pi+a_pi*(x-h_pi)^2+b_pi*(y-k_pi)^2))))}
+
+```
+Usaremos los siguiente parámetros
+```{r, results='hide', message=FALSE, warning=FALSE}
+h_lambda <- 5
+k_lambda <- 5
+a_lambda <- 1/4
+b_lambda <- 10
+c_lambda <- 4
+h_theta <- 7.5
+k_theta <- 7.5
+a_theta <- -1/16
+b_theta <- -1/8
+c_theta <- 0
+h_pi <- 2.5
+k_pi <- 7.5
+a_pi <- -1/4
+b_pi <- -1/16
+c_pi <- 2  
+```
+
+
+#### Intensidad teórica
+```{r, message=FALSE, warning=FALSE}
+xseq <- seq(0, 10, length.out = 100)
+yseq <- seq(0, 10, length.out = 100)
+grid <- expand.grid(xseq, yseq)
+z <- lambda_fun(grid[,1],grid[,2])
+zmat <- matrix(z, 100, 100)
+fields::image.plot(xseq, yseq, zmat, xlab = "x", ylab = "y", main = "Intensidad de puntos")
+
+z <- lambda_theta_fun(grid[,1],grid[,2])
+zmat <- matrix(z, 100, 100)
+fields::image.plot(xseq, yseq, zmat, xlab = "x", ylab = "y", main = "Intensidad de puntos marcados")
+
+z <- lambda_pi_fun(grid[,1],grid[,2])
+zmat <- matrix(z, 100, 100)
+fields::image.plot(xseq, yseq, zmat, xlab = "x", ylab = "y", main = "Intensidad de puntos en la muestra")
+
+z <- lambda_theta_pi_fun(grid[,1],grid[,2])
+zmat <- matrix(z, 100, 100)
+fields::image.plot(xseq, yseq, zmat, xlab = "x", ylab = "y", main = "Intensidad de puntos marcados en la muestra")
+```
+
+#### Estimación teórica
+Número estimado de puntos
+```{r, message=FALSE, warning=FALSE}
+cat(pracma::integral2(lambda_fun,xmin = 0,xmax=10,ymin = 0,ymax=10)$Q)
+```
+Número estimado de puntos marcados
+```{r, message=FALSE, warning=FALSE}
+cat(pracma::integral2(lambda_theta_fun,xmin = 0,xmax=10,ymin = 0,ymax=10)$Q)
+```
+Número estimado de puntos en la muestra
+```{r, message=FALSE, warning=FALSE}
+cat(pracma::integral2(lambda_pi_fun,xmin = 0,xmax=10,ymin = 0,ymax=10)$Q)
+```
+Número estimado de puntos marcados en la muestra
+```{r, message=FALSE, warning=FALSE}
+cat(pracma::integral2(lambda_theta_pi_fun,xmin = 0,xmax=10,ymin = 0,ymax=10)$Q)
+```
+Proporción de puntos marcados
+```{r, message=FALSE, warning=FALSE}
+cat(pracma::integral2(lambda_theta_fun,xmin = 0,xmax=10,ymin = 0,ymax=10)$Q/pracma::integral2(lambda_fun,xmin = 0,xmax=10,ymin = 0,ymax=10)$Q)
+```
+Proporción de puntos marcados en la muestra
+```{r, message=FALSE, warning=FALSE}
+cat(pracma::integral2(lambda_theta_pi_fun,xmin = 0,xmax=10,ymin = 0,ymax=10)$Q/pracma::integral2(lambda_pi_fun,xmin = 0,xmax=10,ymin = 0,ymax=10)$Q)
+```
+
+### Simulación
+```{r, message=FALSE, warning=FALSE}
+set.seed(123)
+win <- owin(xrange = c(0, 10), yrange = c(0, 10))
+spp <- rpoispp(lambda = lambda_fun, win = win)
+props <- theta_fun(spp$x,spp$y)
+marks(spp) <- factor(sapply(props, function(x) rbinom(1, 1, x)),
+                     labels = c("negativo","positivo"))
+props <- pi_fun(spp$x,spp$y)
+spp_sample <- spp[sapply(props, function(x) rbinom(1, 1, x)) == 1]
+```
+
+```{r, message=FALSE, warning=FALSE}
+par(mfrow = c(1, 2))
+plot(spp, cols=c(1:2), pch = 19, cex=0.5, main="")
+plot(spp_sample, cols=c(1:2), pch = 19, cex=0.5, main="")
+```
+
+#### Intensidad simulada
+```{r, message=FALSE, warning=FALSE}
+plot(density(spp), main = "Intensidad de puntos simulados")
+plot(density(spp[spp$marks=="positivo"]), main = "Intensidad de puntos simulados marcados")
+plot(density(spp_sample), main = "Intensidad de puntos simulados en la muestra")
+plot(density(spp_sample[spp_sample$marks=="positivo"]), main = "Intensidad de puntos simulados marcados en la muestra")
+```
+
+Número de puntos simulados
+```{r, message=FALSE, warning=FALSE}
+cat(spp$n)
+```
+Número de puntos simulados marcados
+```{r, message=FALSE, warning=FALSE}
+cat(spp[spp$marks=="positivo"]$n)
+```
+Número de puntos simulados en la muestra
+```{r, message=FALSE, warning=FALSE}
+cat(spp_sample$n)
+```
+Número de puntos simulados marcados en la muestra
+```{r, message=FALSE, warning=FALSE}
+cat(spp_sample[spp_sample$marks=="positivo"]$n)
+```
+Proporción de puntos simulados marcados
+```{r, message=FALSE, warning=FALSE}
+cat(spp[spp$marks=="positivo"]$n/spp$n)
+```
+Proporción de puntos simulados marcados en la muestra
+```{r, message=FALSE, warning=FALSE}
+cat(spp_sample[spp_sample$marks=="positivo"]$n/spp_sample$n)
+```
+Observamos que hay una diferencia entre la proporción dentro de la muestra y dentro del total. Necesitamos añadir un factor de correción
+
+$$
+    \hat{p} = \cfrac{n^+}{n^++\rho n^-}
+$$
+Donde:
+$$
+    \rho \; = \; \cfrac{n^+N^-}{n^-N^+}
+$$
+
+
+```{r, message=FALSE, warning=FALSE}
+N_pos <- sum(spp$marks=="positivo") 
+N_neg <- sum(spp$marks=="negativo")
+n_pos <- sum(spp_sample$marks=="positivo") 
+n_neg <- sum(spp_sample$marks=="negativo")
+rho <- (n_pos*N_neg)/(N_pos*n_neg)
+rho
+n_pos/ (n_pos + n_neg*rho)
+```
+
+
+
+
+
+
+#### Ajustando las funciones para la simulación
+##### Función de intensidad $\lambda$
+```{r, message=FALSE, warning=FALSE}
+temporal <- marks(spp)
+marks(spp) <- NULL
+spp_lambda_fit <- ppm(spp ~ s(x,y,k=6), use.gam=TRUE)
+summary(spp_lambda_fit)
+spp_lambda_fit_predict <- predict(spp_lambda_fit)
+marks(spp) <- temporal
+```
+```{r, results='hide', message=FALSE, warning=FALSE}
+rm(temporal)
+```
+```{r, message=FALSE, warning=FALSE}
+plot(spp_lambda_fit_predict,main="plot")
+persp(spp_lambda_fit_predict,main="persp")
+```
+
+##### Función de riesgo $\theta$
+```{r, message=FALSE, warning=FALSE}
+theta_fit_gam <- mgcv::gam(marks~s(x,y,bs="ad",k=7), family = binomial(link="logit"), data=spp_sample)
+summary(theta_fit_gam)
+plot(theta_fit_gam)
+z <- psych::logistic(predict(theta_fit_gam, newdata=data.frame(x=grid[,1], y=grid[,2])))
+zmat <- matrix(z, 100, 100)
+fields::image.plot(xseq, yseq, zmat, xlab = "x", ylab = "y", main = "")
+```
+
+##### Función de selección $\pi$
+```{r, results='hide', message=FALSE, warning=FALSE}
+select <- c()
+for (i in 1:spp$n) {
+  select <- rbind(select,sum((spp$x[i] == spp_sample$x) & (spp$y[i] == spp_sample$y)))
+}
+spp_selection <- as.data.frame(cbind(select,spp$x,spp$y))
+names(spp_selection) <- c("select","x","y")
+spp_selection$select <- factor(spp_selection$select)
+spp_selection$select <- factor(spp_selection$select,labels = c("no","si"),levels = c(0,1))
+```
+```{r, message=FALSE, warning=FALSE}
+pi_fit_gam <- mgcv::gam(select~s(x,y,bs="ad",k=7), family = binomial(link="logit"), data=spp_selection)
+summary(pi_fit_gam)
+plot(pi_fit_gam)
+z <- psych::logistic(predict(pi_fit_gam, newdata=data.frame(x=grid[,1], y=grid[,2])))
+zmat <- matrix(z, 100, 100)
+fields::image.plot(xseq, yseq, zmat, xlab = "x", ylab = "y", main = "")
+```
+

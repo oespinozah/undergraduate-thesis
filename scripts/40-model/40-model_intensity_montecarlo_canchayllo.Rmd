@@ -1,0 +1,163 @@
+---
+title: "Prueba de Monte-Carlo"
+output: html_document
+---
+
+```{r, warning = FALSE}
+git_path <- function() {
+  system('git rev-parse --show-toplevel', intern = TRUE)
+}
+proj_path <- git_path()
+source(file.path(proj_path,"src","kml_df.R"))
+source(file.path(proj_path,"src","data_ppp.R"))
+source(file.path(proj_path,"src","win_ppp.R"))
+source(file.path(proj_path,"src","evaluate.R"))
+source(file.path(proj_path,"src","inference.R"))
+```
+
+## Leyendo la bases limpias y cargando los paquetes
+
+```{r, warning = FALSE}
+library(spatstat)
+library(sf)
+library(mgcv)
+library(splines)
+library(pROC)
+library(mgcv)
+#library(plotly)
+datos_consolidados <- readRDS(file.path(proj_path, "data", "processed","datos_canchayllo_poblacion.rds"))
+datos_muestra <- readRDS(file.path(proj_path,"data","processed","datos_canchayllo_muestra.rds"))
+canchayllo_household <- readRDS(file.path(proj_path,"data","cleaned","canchayllo_household.rds"))
+canchayllo_household_df <- kml_df(canchayllo_household)
+win <- win_ppp(datos_consolidados,canchayllo_household_df)
+consolidados_ppp <- data_ppp(datos_consolidados,win)
+muestra_ppp <- data_ppp(datos_muestra,win)
+consolidado_lamba_fit <- readRDS(file.path(proj_path,"data","processed","consolidado_lamba_fit_canchayllo.rds"))
+loglambda_p <- readRDS(file.path(proj_path,"data","processed","loglambda_p_canchayllo.rds"))
+loglambda <- readRDS(file.path(proj_path,"data","processed","loglambda_canchayllo.rds"))
+```
+
+
+#### Extrayendo 1000 muestras aleatorias
+
+```{r}
+muestras <- c()
+set.seed(1)
+for (i in 1:1000) {
+  muestras[i] <- list(consolidados_ppp[unique(sample(1:consolidados_ppp$n,
+                                                     muestra_ppp$n,
+                                                     replace=F))])
+}
+```
+
+####  Logaritmo de lambda poblacional para cada muestra
+
+```{r}
+loglambda_p_muestras <- c()
+for (i in 1:1000) {
+  loglambda_p_muestras[i] <- list(log(predict(consolidado_lamba_fit,
+                                              locations=data.frame(x=muestras[[i]]$x,
+                                                                   y=muestras[[i]]$y))))
+}
+```
+
+#### Ajustanto la intensidad muestral para cada muestra
+
+```{r}
+intensidades <- c()
+for (i in 1:1000) {
+  intensidades[i] <- list(ppm(muestras[[i]] ~ s(x,y,k=24),
+                        offset=loglambda_p_muestras[[i]],
+                        use.gam=TRUE))
+}
+```
+
+####  Logaritmo de lambda muestral para cada muestra
+
+```{r}
+loglambda_muestras <- c()
+for (i in 1:1000) {
+  loglambda_muestras[i] <- list(log(predict(intensidades[[i]],
+                                            locations=data.frame(x=muestra_ppp$x,
+                                                                 y=muestra_ppp$y))))
+}
+```
+
+####  cociente para cada muestra
+
+```{r}
+cociente <- matrix(NA,nrow = 127,ncol=1000)
+for (i in 1:1000) {
+  cociente[,i] <- exp(loglambda_muestras[[i]])/exp(loglambda_p)
+}
+```
+
+```{r}
+cociente_promedio <- c()
+for (i in 1:127) {
+  cociente_promedio <- cbind(cociente_promedio,mean(cociente[i,]))
+}
+```
+
+```{r}
+cociente_sd <- c()
+for (i in 1:127) {
+  cociente_sd <- cbind(cociente_sd,sd(cociente[i,]))
+}
+```
+
+```{r}
+cociente_matrix <- matrix(NA, nrow = 127,ncol = 3)
+for (i in 1:127) {
+  cociente_matrix[i,1] <- quantile(density(cociente[i,]),0.5)
+  cociente_matrix[i,2] <- quantile(density(cociente[i,]),0.025)
+  cociente_matrix[i,3] <- quantile(density(cociente[i,]),0.975)
+}
+```
+
+## Gráficos
+
+```{r}
+plot(c(1:127), cociente_promedio,
+     ylim = c(0,1), col="green",
+     type = "l", ylab = "Cociente")
+points(c(1:127), cociente_promedio + qnorm(0.975)*cociente_sd,
+     type = "l", col="red")
+points(c(1:127), cociente_promedio - qnorm(0.975)*cociente_sd,
+       type = "l", col="red")
+points(c(1:127), exp(loglambda)/exp(loglambda_p),
+       type = "l", col="blue")
+grid()
+```
+
+
+```{r}
+plot(c(1:127), exp(loglambda)/exp(loglambda_p),
+     ylim = c(0.1,1.9), col="red", lty=1, pch=1,
+     type = "l", ylab = "Cociente",xlab="N° de Observacion")
+points(c(1:127), cociente_matrix[,2], lty=3,
+     type = "l", col="blue")
+points(c(1:127), cociente_matrix[,3], lty=3,
+       type = "l", col="blue")
+grid()
+```
+
+```{r}
+montecarlo_cociente <- as.data.frame(cbind(muestra_ppp$x,muestra_ppp$y,
+                                           cociente_matrix,
+                                           exp(loglambda)/exp(loglambda_p)))
+names(montecarlo_cociente) <- c("x","y","quantile50","quantile025","quantuile975","cociente")
+#persp(density(muestra_ppp)/density(consolidados_ppp),
+#      zlab="", main="",
+#      theta = 15, phi=15, col = "blue", scale = FALSE,
+#      ltheta = -120, shade = 1,border = NA)
+```
+
+
+
+
+
+```{r}
+exp(loglambda)/exp(loglambda_p) > cociente_matrix[,3]
+```
+

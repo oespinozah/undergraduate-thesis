@@ -1,0 +1,75 @@
+---
+title: "Prevalencia"
+output: html_document
+---
+
+```{r}
+git_path <- function() {
+  system('git rev-parse --show-toplevel', intern = TRUE)
+}
+proj_path <- git_path()
+source(file.path(proj_path,"src","kml_df.R"))
+source(file.path(proj_path,"src","kml_df.R"))
+```
+
+### Leyendo la bases limpias y cargando los paquetes
+
+```{r}
+proj_path <- git_path()
+datos_consolidados <- readRDS(file.path(proj_path, "data", "processed","datos_corpacancha_poblacion.rds"))
+datos_virsel <- readRDS(file.path(proj_path,"data","processed","datos_corpacancha_muestra.rds"))
+```
+
+### Calculamos la prevalencia y sus intervalos de confianza
+
+```{r}
+n_VIRSEL <- nrow(datos_virsel)
+n_HYCOM <- sum(!is.na(datos_consolidados$hid_corp))
+N <- nrow(datos_consolidados)
+p_hat_VIRSEL <- sum(datos_virsel$virit_resultado_wb=="positivo")/n_VIRSEL
+p_hat_HYCOM <- 
+  sum(datos_consolidados$hid_corp[
+    !is.na(datos_consolidados$hid_corp)]=="positivo")/n_HYCOM
+```
+
+#### Creamos una matriz con los diferentes tamaños muestrales e intervalos de confianza
+
+```{r}
+prev_size <- c()
+for (i in 30:nrow(datos_virsel)) {
+  prev_size <- cbind(prev_size,
+                     sum(datos_virsel$virit_resultado_wb[
+                       datos_virsel$virit_orden<=i]=="positivo")/
+                       nrow(datos_virsel[datos_virsel$virit_orden<=i,]))
+}
+prev_size <- cbind(t(t(c(30:nrow(datos_virsel)))),t(prev_size),NA,NA)
+prev_size[,3] <- prev_size[,2] - 
+  qnorm(0.975)*sqrt((prev_size[,2]*(1-prev_size[,2])/
+                       (prev_size[,1]-1))*((N-prev_size[,1])/N))
+prev_size[,4] <- prev_size[,2] +
+  qnorm(0.975)*sqrt((prev_size[,2]*(1-prev_size[,2])/
+                       (prev_size[,1]-1))*((N-prev_size[,1])/N))
+p_hat_HYCOM +
+  qnorm(0.975)*sqrt((p_hat_HYCOM*(1-p_hat_HYCOM)/
+                       (n_HYCOM-1))*((N-n_HYCOM)/N))
+```
+
+### Graficamos la prevalencia
+
+```{r}
+#x11()
+plot(prev_size[,1], prev_size[,2],
+     ylim = c(0.08,0.46),
+     type = "l", xlab = "Tamaño muestral", ylab = "Prevalencia")
+points(prev_size[,1], prev_size[,3],
+     type = "l", col="red")
+points(prev_size[,1], prev_size[,4],
+       type = "l", col="red")
+abline(h=p_hat_HYCOM, col="blue")
+abline(h=p_hat_HYCOM + qnorm(0.975)*sqrt((p_hat_HYCOM*(1-p_hat_HYCOM)/
+                       (n_HYCOM-1))*((N-n_HYCOM)/N)), col=5)
+abline(h=p_hat_HYCOM - qnorm(0.975)*sqrt((p_hat_HYCOM*(1-p_hat_HYCOM)/
+                       (n_HYCOM-1))*((N-n_HYCOM)/N)), col=5)
+grid()
+```
+

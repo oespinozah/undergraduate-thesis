@@ -1,0 +1,134 @@
+---
+title: "30-explore_coordinates"
+output: html_document
+---
+
+
+```{r}
+library(ggplot2)
+library(sf)
+library(lwgeom)
+library(raster)
+library(maptools)
+library(spatstat)
+library(PrevMap)
+```
+
+
+```{r}
+git_path <- function() {
+  system('git rev-parse --show-toplevel', intern = TRUE)
+}
+proj_path <- git_path()
+source(file.path(proj_path,"src","kml_df.R"))
+source(file.path(proj_path,"src","data_ppp.R"))
+source(file.path(proj_path,"src","win_ppp.R"))
+```
+
+## Leyendo la bases limpias y cargando los paquetes
+
+```{r}
+datos_consolidados <- readRDS(file.path(proj_path, "data", "processed","datos_corpacancha_poblacion.rds"))
+datos_virsel <- readRDS(file.path(proj_path,"data","processed","datos_corpacancha_muestra.rds"))
+corpacancha_household <- readRDS(file.path(proj_path,"data","cleaned","corpacancha_household.rds"))
+corpacancha_household_df <- kml_df(corpacancha_household)
+win <- win_ppp(datos_consolidados,corpacancha_household_df)
+#win <- plot(concaveman::concaveman(corpacancha_household[c(1:24,31:177),]))
+consolidados_ppp <- data_ppp(datos_consolidados,win)
+virsel_ppp <- data_ppp(datos_virsel,win)
+centro_salud <- corpacancha_household_df[184,]
+centro_salud$longitud <- as.numeric(centro_salud$longitud)
+centro_salud$latitud <- as.numeric(centro_salud$latitud)
+centro_salud <- data_ppp(centro_salud,win)
+```
+
+
+```{r}
+casa <- corpacancha_household_df[c(1:177),]
+casa$condicion <- "Deshabitada"
+for (i in unique(datos_consolidados$ncasa)) {
+  casa$condicion[i] <- "Habitada"
+}
+casa$condicion <- factor(casa$condicion)
+plot(casa$longitud,casa$latitud,pch = 20,xlab="",ylab="",
+     ylim=c(8743500,8743800), #xlim=c(-76.222,-76.219),
+     col= as.numeric(casa$condicion)+1)
+grid()
+legend("bottomleft", legend=c("Casa habitada", "Casa deshabitada"),
+       col=c("green", "red"), pch = 20, cex=0.8)
+```
+
+```{r}
+casa <- casa[casa$condicion=="Habitada",]
+casa$participa <- 2
+casa$participa[table(datos_consolidados$ncasa, datos_consolidados$virit_wb)[,2]>0] <- 3
+
+plot(casa$longitud,casa$latitud,pch = 20,xlab="",ylab="",cex=1.25,
+     ylim=c(8743500,8743800),
+     col= casa$participa)
+#plot(centro_salud, pch=18, cex=2, col=5, add=TRUE)
+grid()
+legend("bottomleft", legend=c("Al menos 1 habitante participó", "Ningún habitante participó"),
+       col=c("green", "red"), pch = 20, cex=0.8)
+```
+
+```{r}
+plot(datos_virsel$longitud,datos_virsel$latitud,pch = 20,xlab="",ylab="",cex=1.25,
+     ylim=c(8743500,8743800),
+     col= datos_virsel$virit_resultado_wb)
+grid()
+legend("bottomleft", legend=c("Al menos 1 participante positivo", "Ningún participante positivo"),
+       col=c("red", "black"), pch = 20, cex=0.8)
+```
+
+
+
+
+
+```{r}
+plot(density(consolidados_ppp),main=NULL)
+contour(density(consolidados_ppp), las=1, main=NULL,add=TRUE)
+#plot(centro_salud, pch=18, cex=2, col="#FFFFFF", add=TRUE)
+```
+
+
+```{r}
+plot(density(virsel_ppp),main=NULL)
+contour(density(virsel_ppp), las=1, main=NULL,add=TRUE)
+#plot(centro_salud, pch=18, cex=2, col="#FFFFFF", add=TRUE)
+```
+
+
+```{r}
+plot(density(virsel_ppp)/density(consolidados_ppp),main=NULL)
+contour(density(virsel_ppp)/density(consolidados_ppp), las=1, main=NULL,add=TRUE)
+#plot(centro_salud, pch=18, cex=2, col="#FFFFFF", add=TRUE)
+```
+
+
+```{r}
+virsel_posi_ppp <- data_ppp(datos_virsel[datos_virsel$virit_resultado_wb=="positivo",],win)
+virsel_nega_ppp <- data_ppp(datos_virsel[datos_virsel$virit_resultado_wb=="negativo",],win)
+```
+
+```{r}
+plot(density(virsel_posi_ppp)/density(virsel_ppp),main=NULL)
+contour(density(virsel_posi_ppp)/density(virsel_ppp), las=1, main=NULL,add=TRUE)
+#plot(centro_salud, pch=18, cex=2, col="#FFFFFF", add=TRUE)
+```
+
+
+```{r}
+plot(density(virsel_posi_ppp)/ (density(virsel_posi_ppp) +  density(virsel_nega_ppp)),main=NULL)
+contour(density(virsel_posi_ppp)/ (density(virsel_posi_ppp) +  density(virsel_nega_ppp)), las=1, main=NULL,add=TRUE)
+#plot(centro_salud, pch=18, cex=2, col="#FFFFFF", add=TRUE)
+```
+
+```{r}
+plot(density(virsel_posi_ppp)/ (density(virsel_posi_ppp) +  1.126 * density(virsel_nega_ppp)),main=NULL)
+contour(density(virsel_posi_ppp)/ (density(virsel_posi_ppp) +  1.126* density(virsel_nega_ppp)), las=1, main=NULL,add=TRUE)
+#plot(centro_salud, pch=18, cex=2, col="#FFFFFF", add=TRUE)
+```
+
+
+

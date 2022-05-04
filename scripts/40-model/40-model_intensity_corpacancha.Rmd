@@ -1,0 +1,135 @@
+---
+title: "Intensidad"
+output: html_document
+---
+
+```{r, warning = FALSE}
+git_path <- function() {
+  system('git rev-parse --show-toplevel', intern = TRUE)
+}
+proj_path <- git_path()
+source(file.path(proj_path,"src","kml_df.R"))
+source(file.path(proj_path,"src","data_ppp.R"))
+source(file.path(proj_path,"src","win_ppp.R"))
+source(file.path(proj_path,"src","evaluate.R"))
+source(file.path(proj_path,"src","inference.R"))
+```
+
+### Leyendo la bases limpias y cargando los paquetes
+
+```{r, warning = FALSE}
+library(spatstat)
+library(sf)
+library(mgcv)
+library(splines)
+library(pROC)
+library(mgcv)
+datos_consolidados <- readRDS(file.path(proj_path, "data", "processed","datos_corpacancha_poblacion.rds"))
+datos_virsel <- readRDS(file.path(proj_path,"data","processed","datos_corpacancha_muestra.rds"))
+corpacancha_household <- readRDS(file.path(proj_path,"data","cleaned","corpacancha_household.rds"))
+corpacancha_household_df <- kml_df(corpacancha_household)
+win <- win_ppp(datos_consolidados,corpacancha_household_df)
+consolidados_ppp <- data_ppp(datos_consolidados,win)
+virsel_ppp <- data_ppp(datos_virsel,win)
+train_consolidados_ppp <- readRDS(file.path(proj_path,"data","processed","train_corpacancha_poblacion_ppp.rds"))
+train_virsel_ppp <- readRDS(file.path(proj_path,"data","processed","train_corpacancha_muestra_ppp.rds"))
+set.seed(1234)
+ss <- sample(1:24,8,replace=F)
+```
+
+# Intensidad poblacional
+
+```{r}
+qua <- quadrats(consolidados_ppp, 5, 5)
+ecm_nB_train <- c()
+ecm_nB_test <- c()
+for (i in 2:50) {
+  train_fit <- ppm(train_consolidados_ppp~ s(x,y,k=i), use.gam=TRUE)
+  res2e <- residuals(train_fit)
+  resQ <- integral(res2e, qua)
+  ecm_nB_train <- cbind(ecm_nB_train,mean(resQ[-ss]^2))
+  ecm_nB_test <- cbind(ecm_nB_test,
+                       mean((quadratcount(consolidados_ppp,
+                                          nx=5, ny=5)[ss] + resQ[ss])^2))
+}
+plot(c(2:50),ecm_nB_train,ylim = c(0,200),type = "l",col="red",
+     xlab="N° de funciones base", ylab="Residuales")
+points(c(2:50),ecm_nB_test,type = "l",col="blue")
+grid()
+```
+
+##### Menor número de funciones base que genera el menor error en el grupo test
+
+```{r}
+print(which.min(ecm_nB_test)+1)
+consolidado_lamba_fit <- ppm(train_consolidados_ppp~s(x,y,k=15),
+                             use.gam=TRUE)
+summary(consolidado_lamba_fit)
+saveRDS(consolidado_lamba_fit,file.path(proj_path,"data","processed",
+                                           "consolidado_lamba_fit_corpacancha.rds"))
+```
+
+###  Logaritmo de lambda poblacional
+
+```{r}
+loglambda_p <- log(predict(consolidado_lamba_fit,
+                           locations=data.frame(x=virsel_ppp$x,
+                                                y=virsel_ppp$y)))
+saveRDS(loglambda_p,file.path(proj_path,"data","processed", "loglambda_p_corpacancha.rds"))
+```
+
+## Intensidad muestral
+
+```{r}
+qua <- quadrats(virsel_ppp, 5, 5)
+ecm_nB_train <- c()
+ecm_nB_test <- c()
+for (i in 2:50) {
+  train_fit <- ppm(train_virsel_ppp~ s(x,y,k=i),
+                        offset=loglambda_p,
+                        use.gam=TRUE)
+  res2e <- residuals(train_fit)
+  resQ <- integral(res2e, qua)
+  ecm_nB_train <- cbind(ecm_nB_train,mean(resQ[-ss]^2))
+  ecm_nB_test <- cbind(ecm_nB_test,
+                       mean((quadratcount(virsel_ppp,
+                                          nx=5, ny=5)[ss] + resQ[ss])^2))
+}
+plot(c(2:50),ecm_nB_train,ylim = c(0,50),type = "l",col="red",
+     xlab="N° de funciones base", ylab="Residuales")
+points(c(2:50),ecm_nB_test,type = "l",col="blue")
+grid()
+```
+
+##### Menor número de funciones base que genera el menor error en el grupo test
+
+```{r}
+print(which.min(ecm_nB_test)+1)
+virsel_lamba_fit <- ppm(train_virsel_ppp ~ s(x,y,k=17),
+                        offset=loglambda_p,
+                        use.gam=TRUE)
+summary(virsel_lamba_fit)
+```
+
+###  Logaritmo de lambda muestral
+
+```{r}
+loglambda <- log(predict(virsel_lamba_fit,
+                         locations=data.frame(x=virsel_ppp$x,
+                                              y=virsel_ppp$y)))
+saveRDS(loglambda,file.path(proj_path,"data","processed", "loglambda_corpacancha.rds"))
+```
+
+# Pesos
+
+```{r}
+w <- exp(loglambda_p - loglambda)
+```
+
+### Guardando los pesos
+
+```{r}
+saveRDS(w,file.path(proj_path,"data","processed","pesos_corpacancha.rds"))
+```
+
+

@@ -1,0 +1,70 @@
+\documentclass[11pt, spanish]{article}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, linkcolor=black]{hyperref}
+\usepackage[english,spanish]{babel}
+\selectlanguage{spanish}
+\usepackage[utf8]{inputenc}
+\usepackage[svgnames]{xcolor}
+\usepackage{booktabs}
+\usepackage{lscape}
+\hypersetup{colorlinks=true, linkcolor=black}  
+\usepackage{apacite}
+\usepackage{multirow}
+\usepackage{listings}
+\usepackage{afterpage}
+\pagestyle{plain}
+\usepackage{anysize}
+\usepackage{here}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\marginsize{2.5cm}{2.5cm}{3.0cm}{2.5cm}
+%\oddsidemargin=0.5cm
+%\textheight=21cm
+%\textwidth=14cm
+%\topmargin=-1cm
+%\oddsidemargin=0cm
+\parindent=0mm
+\pagestyle{plain}
+\newenvironment{poliabstract}[1]
+   {\renewcommand{\abstractname}{#1}\begin{abstract}}
+   {\end{abstract}}
+\begin{document}
+\begin{titlepage}
+\begin{center}
+ {\Large \bf UNIVERSIDAD NACIONAL DE INGENIERÍA}\\[0.5cm]
+{\bf FACULTAD DE INGENIERÍA ECONÓMICA, ESTADÍSTICA Y CIENCIAS SOCIALES}\\[1.5cm]
+\begin{center}
+\includegraphics[width=0.3\textwidth]{images/Logo.png}
+\end{center}
+\vspace{1cm}
+\title{} % titulo de tu tesis para latex
+{\bf \large PLAN DE TESIS}\\[0.5cm]
+{\bf \large ESTIMACIÓN DE LA PREVALENCIA DE HIDATIDOSIS HUMANA CONSIDERANDO LA DISTRIBUCIÓN ESPACIAL PARA DISMINUIR EL SESGO EN EL CENTRO POBLADO DE CORPACANCHA, JUNÍN - PERÚ}\\ [0.5cm] % titulo de tu tesis
+{PARA OBTENER EL TÍTULO PROFESIONAL DE INGENIERO ESTADÍSTICO}\\[1cm]
+{{\bf Elaborado por}:\\ OSWALDO GABRIEL ERNESTO ESPINOZA HURTADO}\\[0.75cm] % nombres del autor o autores
+{{\bf Asesor interno}:\\ M.Sc. Christian Amao Suxo}\\ [0.5cm]
+{{\bf Asesor externo}:\\ Ph.D. Erick Chacón Montalvan}\\ [0.75cm]  % nombres del autor o autores
+{\large Lima, Septiembre, 2020}\\[0.2cm] % fecha de sustentación
+{PERÚ}
+\end{center}
+\end{titlepage}
+\input{00_Resumen}
+\newpage
+\selectlanguage{spanish}
+\tableofcontents
+\newpage
+\input{01_Problema}
+\newpage
+\input{02_MarcoTeorico}
+\newpage
+\input{03_Metodologia}
+\newpage
+\input{04_Cronograma}
+\newpage
+\bibliographystyle{apacite}
+\bibliography{references.bib}
+
+
+\end{document}

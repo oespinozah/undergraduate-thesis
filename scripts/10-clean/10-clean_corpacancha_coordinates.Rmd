@@ -1,0 +1,36 @@
+---
+title: "Limpieza de coordenadas de la población Corpacancha"
+output: html_document
+prerequisites:
+  - data/cleaned/BaseJunin.csv
+  - data/raw/Corpacancha.kml
+target: 
+  - data/processed/datos_consolidados.csv
+---
+
+```{r, include=F}
+rm(list=ls())
+git_path <- function() {
+  system('git rev-parse --show-toplevel', intern = TRUE)
+}
+```
+
+## Leyendo la base de datos de las coordenadas y cargando los paquetes necesarios
+#### La base de datos está en XYZ, pero como todos tiene 0 de altitud estamos eliminando la coordenada Z
+
+```{r}
+library(sf)
+library(lwgeom)
+proj_path <- git_path()
+corpacancha_household <- st_read(file.path(proj_path,"data","raw", "Corpacancha.kml"))
+corpacancha_household <- sf::st_zm(corpacancha_household)
+corpacancha_household <- sf::st_transform(corpacancha_household, crs = 32718)
+```
+
+
+## Guardamos las coordenadas limpias
+
+```{r}
+saveRDS(corpacancha_household,file.path(proj_path,"data","cleaned",
+                                        "corpacancha_household.rds"))
+```

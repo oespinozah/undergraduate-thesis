@@ -1,0 +1,254 @@
+---
+title: "40-model_fittin"
+output: html_document
+---
+
+```{r}
+git_path <- function() {
+  system('git rev-parse --show-toplevel', intern = TRUE)
+}
+proj_path <- git_path()
+source(file.path(proj_path,"src","kml_df.R"))
+source(file.path(proj_path,"src","data_ppp.R"))
+source(file.path(proj_path,"src","win_ppp.R"))
+source(file.path(proj_path,"src","evaluate.R"))
+source(file.path(proj_path,"src","inference.R"))
+source(file.path(proj_path,"src","validation.R"))
+```
+
+## Leyendo la bases limpias y cargando los paquetes
+
+```{r}
+library(spatstat)
+library(sf)
+library(mgcv)
+library(splines)
+library(pROC)
+library(mgcv)
+library(caret)
+datos_consolidados <- read.csv(file.path(proj_path,
+                                         "data",
+                                         "processed",
+                                         "datos_consolidados.csv"))
+datos_virsel <- read.csv(file.path(proj_path,
+                                   "data",
+                                   "processed",
+                                   "datos_virsel.csv"))
+corpacancha_household <- readRDS(file.path(proj_path,"data","cleaned",
+                                           "corpacancha_household.kml"))
+corpacancha_household_df <- kml_df(corpacancha_household)
+win <- win_ppp(datos_consolidados,corpacancha_household_df)
+consolidados_ppp <- data_ppp(datos_consolidados,win)
+virsel_ppp <- data_ppp(datos_virsel,win)
+datos_virsel$virit_resultado_wb <- factor(as.numeric(datos_virsel$virit_resultado_wb == "positivo"),
+                                          labels = c("negativo","positivo"),levels = c(0,1))
+datos_virsel$sexpac <- factor(as.numeric(datos_virsel$sexpac == "masculino"),
+                              labels = c("femenino","masculino"),levels = c(0,1))
+datos_consolidados$sexpac <- factor(as.numeric(datos_consolidados$sexpac == "masculino"),
+                                    labels = c("femenino","masculino"),levels = c(0,1))
+datos_virsel$nperros_factor <- factor(datos_virsel$nperros)
+datos_consolidados$nperros_factor <- factor(datos_consolidados$nperros)
+```
+
+## Pesos
+
+```{r}
+w <- readRDS(file.path(proj_path,"data","processed","pesos.rds"))
+```
+
+## Particionamos en dos grupos
+
+```{r}
+set.seed(2021)
+inTrain <- createDataPartition(y = datos_virsel$virit_resultado_wb,p=0.7,list = FALSE)
+train <- datos_virsel[inTrain,]
+test <- datos_virsel[-inTrain,]
+```
+
+
+# Modelo para determinar el riesgo a la enfermedad
+### Modelo solo considerando el efecto espacial
+
+```{r}
+modelo_espacial <- mgcv::gam(virit_resultado_wb~s(longitud,latitud,k=9),
+                             family = binomial(link="logit"),
+                             data=train)
+validation(modelo_espacial,train,test)
+modelo_espacial_w <- mgcv::gam(virit_resultado_wb~s(longitud,latitud,k=9),
+                               family = binomial(link="logit"),
+                               data=train,
+                               weights = w[inTrain])
+validation(modelo_espacial_w,train,test)
+```
+
+### Modelo solo considerando la edad
+
+```{r}
+modelo_edad <- mgcv::gam(virit_resultado_wb~ s(edapac,k=8),
+                         family = binomial(link="logit"),
+                         data=train)
+validation(modelo_edad,train,test)
+modelo_edad_w <- mgcv::gam(virit_resultado_wb~ s(edapac,k=8),
+                           family = binomial(link="logit"),
+                           data=train,
+                           weights = w[inTrain])
+validation(modelo_edad_w,train,test)
+```
+
+### Modelo solo considerando el sexo
+
+```{r}
+modelo_sexo <- mgcv::gam(virit_resultado_wb~ sexpac,
+                         family = binomial(link="logit"),
+                         data=train)
+validation(modelo_sexo,train,test)
+modelo_sexo_w <- mgcv::gam(virit_resultado_wb~ sexpac,
+                           family = binomial(link="logit"),
+                           data=train,
+                           weights = w[inTrain])
+validation(modelo_sexo_w,train,test)
+```
+
+### Modelo solo considerando el numero de perros
+
+```{r}
+modelo_perros <- mgcv::gam(virit_resultado_wb~ s(nperros,k=5),
+                           family = binomial(link="logit"),
+                           data=train)
+validation(modelo_perros,train,test)
+modelo_perrosf <- mgcv::gam(virit_resultado_wb~ nperros_factor,
+                            family = binomial(link="logit"),
+                            data=train)
+validation(modelo_perrosf,train,test)
+modelo_perros3 <- mgcv::gam(virit_resultado_wb~ perros3,
+                            family = binomial(link="logit"),
+                            data=train)
+validation(modelo_perros3,train,test)
+modelo_perros_w <- mgcv::gam(virit_resultado_wb~ s(nperros,k=5),
+                             family = binomial(link="logit"),
+                             data=train,
+                             weights = w[inTrain])
+validation(modelo_perros_w,train,test)
+modelo_perrosf_w <- mgcv::gam(virit_resultado_wb~ nperros_factor,
+                              family = binomial(link="logit"),
+                              data=train,
+                              weights = w[inTrain])
+validation(modelo_perrosf_w,train,test)
+modelo_perros3_w <- mgcv::gam(virit_resultado_wb~ perros3,
+                              family = binomial(link="logit"),
+                              data=train,
+                              weights = w[inTrain])
+validation(modelo_perros3_w,train,test)
+```
+
+### Modelo considerando el sexo y la edad
+
+```{r}
+modelo_edadsexo <- mgcv::gam(virit_resultado_wb~ s(edapac,k=20,by=sexpac),
+                             family = binomial(link="logit"),
+                             data=train)
+validation(modelo_edadsexo,train,test)
+modelo_edadsexo_w <- mgcv::gam(virit_resultado_wb~ s(edapac,k=20,by=sexpac),
+                               family = binomial(link="logit"),
+                               data=train,
+                               weights = w[inTrain])
+validation(modelo_edadsexo_w,train,test)
+```
+
+### Modelo considerando el sexo y el efecto espacial
+
+```{r}
+modelo_espacialsexo <- mgcv::gam(virit_resultado_wb~s(longitud,latitud,k=18,
+                                                        by=sexpac) ,
+                                 family = binomial(link="logit"),
+                                 data=train)
+validation(modelo_espacialsexo,train,test)
+modelo_espacialsexo_w <- mgcv::gam(virit_resultado_wb~s(longitud,latitud,k=18,
+                                                        by=sexpac) ,
+                                   family = binomial(link="logit"),
+                                   data=train,
+                                   weights = w[inTrain])
+validation(modelo_espacialsexo_w,train,test)
+```
+
+### Modelo considerando el sexo y el número de perros
+
+```{r}
+modelo_perrosexo <- mgcv::gam(virit_resultado_wb~ nperros_factor + sexpac,
+                              family = binomial(link="logit"),
+                              data=train)
+validation(modelo_perrosexo,train,test)
+modelo_perrosexo_w <- mgcv::gam(virit_resultado_wb~ nperros_factor + sexpac,
+                                family = binomial(link="logit"),
+                                data=train,
+                                weights = w[inTrain])
+validation(modelo_perrosexo_w,train,test)
+```
+
+### Modelo considerando la edad y el efecto espacial
+
+```{r}
+modelo_espacialedad <- mgcv::gam(virit_resultado_wb~s(longitud,latitud,k=30) +
+                                   s(edapac,k=9),
+                                 family = binomial(link="logit"),
+                                 data=train)
+validation(modelo_espacialedad,train,test)
+modelo_espacialedad_w <- mgcv::gam(virit_resultado_wb~s(longitud,latitud,k=30) +
+                                     s(edapac,k=9),
+                                   family = binomial(link="logit"),
+                                   data=train,
+                                   weights = w[inTrain])
+validation(modelo_espacialedad_w,train,test)
+```
+
+### Modelo considerando el sexo, la edad y el efecto espacial
+
+```{r}
+modelo_edadsexoefecto <- mgcv::gam(virit_resultado_wb~s(longitud,latitud,k=9,
+                                                          by=sexpac) +
+                                       s(edapac,k=9),
+                                   family = binomial(link="logit"),
+                                   data=train)
+validation(modelo_edadsexoefecto,train,test)
+modelo_edadsexoefecto_w <- mgcv::gam(virit_resultado_wb~s(longitud,latitud,k=9,
+                                                          by=sexpac) +
+                                       s(edapac,k=9),
+                                     family = binomial(link="logit"),
+                                     data=train,
+                                     weights = w[inTrain])
+validation(modelo_edadsexoefecto_w,train,test)
+```
+
+### Modelo considerando el sexo, la edad y el efecto espacial y perros
+
+```{r}
+modelo_sinefecto <- mgcv::gam(virit_resultado_wb~ s(edapac,k=9) +
+                                nperros_factor + sexpac,
+                              family = binomial(link="logit"),
+                              data=train)
+validation(modelo_sinefecto,train,test)
+modelo_sinefecto_w <- mgcv::gam(virit_resultado_wb~ s(edapac,k=9) +
+                                nperros_factor + sexpac,
+                              family = binomial(link="logit"),
+                              data=train,
+                              weights = w[inTrain])
+validation(modelo_sinefecto_w,train,test)
+```
+
+### Modelo full con pesos
+
+```{r}
+modelo_full <- mgcv::gam(virit_resultado_wb~s(longitud,latitud,k=4,
+                                                by=sexpac) +
+                             s(edapac,k=8) + perros3 - 1,
+                         family = binomial(link="logit"),
+                         data=train)
+validation(modelo_full,train,test)
+modelo_full_w <- mgcv::gam(virit_resultado_wb~s(longitud,latitud,k=4,
+                                                by=sexpac) +
+                             s(edapac,k=8) + perros3 - 1,
+                           family = binomial(link="logit"),
+                           data=train,
+                           weights = w[inTrain])
+validation(modelo_full_w,train,test)
+```

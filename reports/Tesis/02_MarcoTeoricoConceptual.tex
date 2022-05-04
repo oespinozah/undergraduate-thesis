@@ -1,0 +1,421 @@
+\chapter{MARCO TEÓRICO CONCEPTUAL}
+\section{Antecedentes}
+Estudios realizados en China han considerado la heterogeneidad de la probabilidad que tiene cada individuo en ser seleccionado para una muestra al momento de la estimación del número de pacientes que padecen cierta enfermedad, tratando la información obtenida bajo un enfoque bayesiano~\cite{bailly2015bayesian}. De igual forma, el considerar la distribución espacial de los individuos capturados en una determinada muestra se ha visto empleado en el campo de la ecología~\cite{Royle2014Spatial}; lo cual puede llegar a ser replicado en el campo de las ciencias epidemiológicas~\cite{braeye2016capture}. Finalmente, es necesario mencionar que estudios anteriores realizados en la zona de Junin solo han empleado métodos tradicionales para la estimación de la prevalencia y factores asociados~\cite{santivanez2010factores}.
+\section{Bases Teóricas}
+\subsection{Bases Teóricas Generales}
+
+\subsubsection{Hidatidosis Humana}\label{hidat}
+La echinococcosis quística o hidatidosis humana (también conocida solo como \textit{Hidatidosis}) es una zoonosis (enfermedad transmitida de animales a humanos) parasitaria incluida en la lista de enfermedades tropicales desatendidas por la OMS \cite{sarkar2017cystic}. Es causada por el parásito \textit{Echinococcus granulosus} en su estadío larvareo \cite{giri2012review}. Este parásito requiere dos hospederos mamíferos para completar su ciclo de vida: El ganado ovino (ovejas), quien es el hospedero intermediario, y el perro, como el hospedero definitivo. Este último adquiere el parásito alimentándose de vísceras de oveja infectadas con el parásito. El hombre podría considerarse como un hospedero intermediario \textit{accidental} causado por el consumo de alimentos o agua contaminada con huevos presentes en las heces de los perros. Una vez adquirido el parásito, estos huevos eclosionan en el intestino delgado del hombre, en donde pasan a la circulación venosa hasta alojarse en el hígado (principal localización), pulmón (segunda localización de importancia) u otra víscera o tejido, donde se formará el quiste hidatídico~\cite{moro2009echinococcosis}. Diversos autores concluyen que tanto la edad, el sexo y la tenencia de perros en el hogar, en otras variables, son factores de riesgo para la enfermedad~\cite{santivanez2010factores}. Una de las formas en las que se diagnostica esta enfermedad es por medio de la prueba serológica de Western blot. Dicha prueba cuenta con una sensibilidad y especificidad para Hidatidosis del 94\% y 100\%, respectivamente~\cite{davelois2016rendimiento}. 
+\newpage
+\subsection{Bases Teóricas Estadísticas}
+\subsubsection{Estimación de una proporción poblacional}
+Si seleccionamos una muestra aleatoria de tamaño $n$, la proporción muestral $\hat{p}$ es la fracción de elementos de la muestra que poseen la característica de interés; para nuestro caso, esta será que el paciente sea positivo frente a tener la enfermedad. De esta forma, podemos decir que $\hat{p}$ se puede estimar de la siguiente manera~\cite{scheaffer2006elementos}:
+\begin{equation} \label{estpropcant}
+    \hat{p} = \frac{n_+}{n}
+\end{equation}
+Donde:\\
+\hspace*{2cm} $n_+$: Número de casos positivos en la muestra\\
+\hspace*{2cm} $n$\hspace*{0.27cm}: Tamaño de la muestra\\
+Si a los valores de la muestra se les asigna un valor numérico (Positivo: $X=1$, Negativo: $X=0$), entonces la estimación de $\hat{p}$ puede ser expresada de la siguiente manera:
+\begin{equation}\label{estprop}
+    \hat{p} = \frac{\sum_{i=1}^{n}{x_i}}{n}
+\end{equation}
+Cuando $n$ es lo suficientemente grande, el intervalo de confianza (a un determinado $\alpha$) para la estimación se puede determinar de la siguiente manera:
+\begin{equation*}
+    \hat{p} \hspace{0.2cm} \pm \hspace{0.2cm} Z_{1-\alpha/2} \sqrt{\frac{\hat{p}(1-\hat{p})}{n-1} \left( \frac{N-n}{N} \right)}
+\end{equation*}
+Donde:
+\begin{itemize}[noitemsep,nolistsep]
+    \item[] $N:$ Tamaño poblacional
+    \item[] $n:$ Tamaño de la muestra
+    \item[] $Z_{1-\alpha/2}:$ Valor de $1-\alpha/2$ en la distribución normal
+\end{itemize}
+
+\subsubsection{Potencia estadística}
+Se entiende como potencia estadística a la probabilidad que la hipótesis alterna H$_{1}$ sea no rechazada cuando es verdadera. El valor para esta probabilidad es matemáticamente el complemento del error tipo II ($\beta$). Además, se encuentra comunmente relacionado a factores vinculados con la muestra y su recolección, como su tamaño~\cite{ellis2010essential}.
+\begin{equation*}
+	\mathrm{Potencia\;estadistica} = \mathrm{P} (\mathrm{Rechazar\;la\;hipotesis\;nula}|\mathrm{La\;hipotesis\;\;es\;falsa})=1-\beta 
+\end{equation*}
+
+
+\subsubsection{Sesgo}
+Al ser desconocido un parámetro $\theta$, no es posible conocer hasta qué punto un estimador $\hat{\theta}$ se encuentra lejos o cerca de su verdadero valor. El error que aparece al tomar como verdadero al valor del estimador $\hat{\theta}$ es la diferencia entre $\theta - \hat{\theta}$. Si se pudiera obtener todas las posibles muestras y para cada una de ellas su correspondiente estimación, entonces una métrica para evaluar el error vendría a ser el error cuadrático medio (ECM):
+\begin{equation}\label{ECM}
+    ECM (\hat{\theta}) = E (\theta - \hat{\theta})^2
+\end{equation}
+Efectuando y ordenando:
+$$ECM (\hat{\theta}) = V( \hat{\theta} ) + [\theta - E (\hat{\theta})]^2$$
+En donde la expresión $\theta - E (\hat{\theta})$ será denominada como sesgo~\cite{ruiz2004fundamentos}. Adicionalmente, es necesario hacer mención que desde un punto de vista epidemiológico, el sesgo puede ser entendido como un error sistemático en el diseño de un estudio que resulta en un error en la estimación. Cuando el error es producido durante el proceso de selección de los individuos de la muestra, recibe el nombre de sesgo de selección~\cite{celentano2019gordis}.
+\subsubsection{Procesos Puntuales Espaciales}
+Un proceso puntual espacial es un proceso estocástico cuyas realizaciones consisten en un conjunto finito o numerablemente infinito de puntos en el plano. En caso de tratarse de un proceso puntual espacial finito, se trata de una colección $\textbf{X}=\{ X_1,X_2,\dots \}$ de puntos en el espacio $R^2$ con un número finito de puntos en una región A. Los puntos en este tipo de procesos son medidos mediante la función de conteo $N(A)$ (número de puntos por unidad cuadrada) o la función de intesidad $\lambda(X)$ (densidad media de puntos)~\cite{baddeley2015spatial}.
+\subsubsection{Procesos de Poisson}
+Entre los procesos puntuales espaciales, los más empleados son los procesos de Poisson. Estos son agrupados de acuerdo a la naturaleza de su función de intesidad $\lambda(X)$~\cite{baddeley2015spatial}.
+\begin{enumerate}
+    \item \textbf{Proceso de Poisson Homogéneo}
+    Considerando una región arbitraria $A$ y regiones disjuntas $A_i$ para $i=1,\dots,k$, entonces:
+    \begin{itemize}
+        \item [i)] $N(A)$ tiene una distribución de Poisson con media $\lambda |A|$, donde $|A|$ representa el area de la región A ($\lambda |A|$, función de intesidad, constante)
+        \item [ii)] $N(A_1), \dots, N(A_k)$ son variables aleatoreas independiente para todo $k$ y $A_i$, lo que es conocido como Aleatoriedad Espacial Completa (CSR)
+    \end{itemize}
+    \item \textbf{Proceso de Poisson No-Homogéneo}
+    Similar al caso anterior (Proceso de Poisson Homogéneo) con la diferencia de que la función de intesidad $\lambda(X)$ varia acorde la ubicación de $x$.
+    \begin{itemize}
+        \item [i)] $N(A)$ tiene una distribución de Poisson con media $\int_A \lambda(x)dx$
+        \item [ii)] $N(A_1), \dots, N(A_k)$ son CSR
+    \end{itemize}
+    \item \textbf{Proceso de Poisson Doblemente Estocástico}
+    Proceso de Poisson No-Homogéneo con función de intesidad $\wedge(X)$ aleatorea.
+    \begin{itemize}
+        \item [i)] $\{\wedge (X)= \lambda(X): X \in R^2\}$ es un Proceso No-negativo Estocástico
+        \item [ii)] La condicional en $\{\wedge (X)= \lambda(X) : X \in R^2\}$ es un Proceso de Poisson No-Homogéneo con intesidad $\lambda(X)$
+    \end{itemize}
+\end{enumerate}
+
+\subsubsection{Procesos de Poisson Marcados}
+A la secuencia de pares $(X_1,Y_1), (X_2,Y_2), \dots$ se le conoce como un proceso de Poisson marcado cuando cada variable aleatoria $Y_i$ está asociadas a cada $X_i$ realización de un proceso de Poison con función de intesidad $\lambda(X)$~\cite{pinsky2010introduction}. En el caso que puntos marcados tengan como posibles valores de $Y_i$ 1 y 0; la probabilidad para cada uno será:
+\begin{equation*}
+    P(Y_i = 1) = \theta
+\end{equation*}
+\begin{equation*}
+    P(Y_i = 0) = 1 - \theta
+\end{equation*}
+\subsubsection{Número esperado de puntos}
+En un proceso de Poisson el número esperado de puntos en el espacio $X=(x,y)$ está definido como el valor obtenido por medio de la integral de la función de intensidad $\lambda(X)$ en todo su dominio.
+\begin{equation*}
+    \bigintsss \bigintsss_{X} \lambda(x,y) \mathrm{d}x\mathrm{d}y
+\end{equation*}
+Suponiendo que la intensidad no depende de su ubicación en el espacio, entonces el valor de $\lambda(x,y)$ será una constante ($\lambda$). Considerando en base a este un proceso de Poisson marcado en el que $\theta$ varia espacialmente, entonces el número esperado de puntos \textit{marcados} con el valor 1 ($Y_i=1$) en el espacio $X=(x,y)$ está definido como el valor obtenido por medio de la integral de la función de intensidad de los puntos marcados $\lambda_\theta(X)$ en todo su dominio. Esta función de intensidad $\lambda_\theta(X)$ es el producto de $\lambda(X)$ con la función espacial de $\theta$ ($f_{\theta}(x,y)$).
+\begin{equation*}
+    \bigintsss\bigintsss_{X} \lambda_\theta(x,y) \mathrm{d}x\mathrm{d}y = \bigintsss\bigintsss_{X} \lambda(x,y) f_{\theta}(x,y)  \mathrm{d}x\mathrm{d}y
+\end{equation*}
+En caso que $\theta$ no dependa de su ubicación en el espacio, entonces este mantendrá su valor constante. Suponiendo que del proceso de Poisson marcado previamente planteado se obtiene una muestra en la que cada individuo $i$ tiene una propabilidad $\pi_i$ de ser seleccionado y esta depende de su ubicación espacial, entonces el número esperado de puntos \textit{marcados} con el valor 1 ($Y_i=1$) en la muestra en el espacio $X=(x,y)$ está definido como el valor obtenido por medio de la integral de la función de intensidad de los puntos marcados en la muestra $\lambda_{\theta_\pi}(X)$ en todo su dominio. Esta función de intensidad $\lambda_{\theta_\pi}(X)$ es el producto de $\lambda(X)$ con la función espacial de $\theta$ ($f_{\theta}(x,y)$) y la función espacial de $\pi$ ($f_{\pi}(x,y)$).
+\begin{equation*}
+    \bigintsss\bigintsss_{X} \lambda_{\theta_\pi}(x,y) \mathrm{d}x\mathrm{d}y =\bigintsss\bigintsss_{X} \lambda(x,y) f_{\theta}(x,y) f_{\pi}(x,y)  \mathrm{d}x\mathrm{d}y
+\end{equation*}
+En caso que $\pi$ no dependa de su ubicación en el espacio, entonces este mantendrá su valor constante. De forma análoga, se puede determinar también cuántos puntos fueron seleccionados en total en la muestra con el valor obtenido por medio de la integral de la función de intensidad de los puntos en la muestra$\lambda_\pi(X)$ en todo su dominio. Esta función de intesidad es el producto de $\lambda(X)$  con la función espacial de $\pi$ ($f_{\pi}(x,y)$).
+\begin{equation*}
+    \bigintsss\bigintsss_{X} \lambda_\pi(x,y) \mathrm{d}x\mathrm{d}y = \bigintsss\bigintsss_{X} \lambda(x,y) f_{\pi}(x,y)  \mathrm{d}x\mathrm{d}y
+\end{equation*}
+Consecuentemente, en base a la Ecuación \ref{estpropcant}, para estimar una proporción considerando densidad poblacional, riesgo espacial y el tipo de muestreo se emplearía el siguiente cálculo:
+\begin{equation}\label{estpropgen}
+    \hat{p} = \cfrac{ \bigint\bigint_{X} \lambda_{\theta_\pi}(x,y) \mathrm{d}x\mathrm{d}y} { \bigint\bigint_{X} \lambda_\pi(x,y)  \mathrm{d}x\mathrm{d}y} = \cfrac{ \bigint\bigint_{X} \lambda(x,y) f_{\theta}(x,y) f_{\pi}(x,y)  \mathrm{d}x\mathrm{d}y} { \bigint\bigint_{X} \lambda(x,y) f_{\pi}(x,y)  \mathrm{d}x\mathrm{d}y}
+\end{equation}
+Si bien la Ecuación \ref{estpropgen} vendría a ser considerada como una generalización, en la Tabla \ref{esptprofun} se puede ver el comportamiento de esta ecuación para cada uno de los escenarios.
+
+\begin{table}[h]
+  \centering
+  \caption{Funciones para estimar una proporción considerando densidad poblacional, riesgo espacial y el tipo de muestreo} \label{esptprofun}
+    \begin{tabular}{|p{4.645em}|c|c|}
+\cmidrule{2-3}    \multicolumn{1}{r|}{} & \multicolumn{2}{p{16em}|}{Densidad poblacional homogénea} \\
+\cmidrule{2-3}    \multicolumn{1}{r|}{} & \multicolumn{1}{p{7.785em}|}{Muestreo aleatorio simple} & \multicolumn{1}{p{8.215em}|}{Muestreo con sesgo espacial} \\
+    \midrule
+    Riesgo espacial constante & $\hat{p} = \theta $ & $\hat{p} = \theta $ \\
+    \midrule
+    Riesgo espacial variable & $\hat{p} =  \bigint\bigint_{X} f_{\theta}(x,y) \mathrm{d}x\mathrm{d}y $ & $\hat{p} = \cfrac{ \bigint\bigint_{X} f_{\theta}(x,y) f_{\pi}(x,y)  \mathrm{d}x\mathrm{d}y} { \bigint\bigint_{X} f_{\pi}(x,y)  \mathrm{d}x\mathrm{d}y}$ \\
+    \midrule
+    \multicolumn{1}{r|}{} & \multicolumn{2}{p{16em}|}{Densidad poblacional heterogéna} \\
+\cmidrule{2-3}    \multicolumn{1}{r|}{} & \multicolumn{1}{p{7.785em}|}{Muestreo aleatorio simple} & \multicolumn{1}{p{8.215em}|}{Muestreo con sesgo espacial} \\
+    \midrule
+   Riesgo espacial constante & $\hat{p} = \theta $ & $\hat{p} = \theta $ \\
+    \midrule
+    Riesgo espacial variable & $\hat{p} = \cfrac{ \bigint\bigint_{X} \lambda(x,y) f_{\theta}(x,y) \mathrm{d}x\mathrm{d}y} { \bigint\bigint_{X} \lambda(x,y) \mathrm{d}x\mathrm{d}y}$ & $\hat{p} = \cfrac{ \bigint\bigint_{X} \lambda(x,y) f_{\theta}(x,y) f_{\pi}(x,y)  \mathrm{d}x\mathrm{d}y} { \bigint\bigint_{X} \lambda(x,y) f_{\pi}(x,y)  \mathrm{d}x\mathrm{d}y}$ \\
+    \bottomrule
+    \end{tabular}%
+\end{table}%
+
+\newpage
+
+
+\subsubsection{Estudios de casos y controles}
+Un estudio de casos y controles se basa en identificar a los individuos positivos a la enfermedad (casos) y determinar su exposición. Luego, se compara esta información con un grupo negativo a la enfermedad (controles)~\cite{celentano2019gordis}. Una medida de asocación común dentro de estos estudios es el Odd Ratio (OR).
+\begin{table}[htbp]
+  \caption{Estudio Caso-control}\label{tabcc}
+  \centering
+  %
+    \begin{tabular}{rr|cc|c}
+    \toprule
+          &       & \multicolumn{2}{l|}{\textbf{Enfermedad}} &  \\
+          &       & Positivo & Negativo & \textbf{Total} \\
+    \midrule
+    \multicolumn{1}{l}{\textbf{Exposición}} & Presente & $a$   & $b$   & $a+b$ \\
+          & Ausente & $c$     & $d$     &  $c + d$ \\
+    \midrule
+          & \textbf{Población} & $a + c$   & $b + d$   & $a+b+c+d$ \\
+    \bottomrule
+    \end{tabular}%
+\end{table}%
+
+El valor del OR entre un grupo con otro se determina por medio del cociente entre los odds en el primer grupo y los odds en el segundo grupo. Por ejemplo, en la Tabla \ref{tab2x2}, el cálculo para el OR entre el grupo con la exposición presente y el grupo con la exposición ausente sería:
+\begin{equation*}
+    OR=\cfrac{a/c}{b/d}=\cfrac{ad}{cb}
+\end{equation*}
+
+%Otra forma de estimar la probabilidad sería:
+%\begin{equation}
+%    \hat{p}(x,y) = \cfrac{\hat{\lambda}_1(x,y)}{\alpha \hat{\lambda}_0(x,y)}
+%\end{equation}
+%Donde
+%\begin{equation*}
+%    \alpha = \cfrac{n_1}{n_0} \left( 1 + \cfrac{N_0}{N_1} \right)
+%\end{equation*}
+
+
+\subsubsection{Modelos Aditivos Generalizados (GAM)}
+Un modelo aditivo generalizado (GAM) es un modelo lineal generalizado (GLM) en el que los predictores lineales están dados por una suma especificada de funciones suavizadas de las $p$ covariables más una constante~\cite{mgcv}.
+\begin{equation}
+    Y=\alpha+ \sum^p_{j=1}  f_j(X_j) + \epsilon 
+\end{equation}
+\begin{equation}
+    E(Y|X_1,X_2,\dots,X_p)=\alpha+f_1(X_1)+f_2(X_2)+\dots+f_p(X_p)
+\end{equation}
+Un ejemplo de estos vendría a ser el modelo de regresión aditivo logístico~\cite{friedman2001elements}:
+\begin{equation}\label{GAM}
+    log\left(\frac{P(Y=1|X)}{P(Y=0|X)}\right)=\alpha+f_1(X_1)+f_2(X_2)+\dots+f_p(X_p)
+\end{equation}
+Si definimos $\mu(X)=P(Y=1|X)$ y la función de enlace $g(\mu)=logit(\mu)$, entonces la Ecuación \ref{GAM} estaría expresada de la siguiente manera:
+\begin{equation}
+    g(\mu(X))=\alpha+f_1(X_1)+f_2(X_2)+\dots+f_p(X_p)
+\end{equation}
+
+\subsubsection{Función de Verosimilitud (L)}
+La función de verosimilitud mide la probabilidad de que los valores sean observados bajo cierto valor del parámetro, el cual puede variar. Para un conjunto de observaciones independientes $x_1, x_2, \dots, x_n$, la función de verosimilitud es matemáticamente igual a su función de probabilidad conjunta.
+\begin{equation}
+    \mathrm{L}(\theta; \textbf{x}) = f_\theta(x_1) f_\theta(x_2) \dots f_\theta(x_n)
+\end{equation}
+De forma complementaria, para un vector aleatorio $\textbf{X} = (x_1, x_2, \dots, x_n)^t$, la función de verosimilitud ponderada WL~\cite{wang2001maximum} ha sido definida como:
+\begin{equation}
+	\mathrm{WL}(\theta; \textbf{X},\textbf{w}) = \prod_{i=1}^m \prod_{j=1}^{n_i} f_\theta(x_{ij};\theta)^{w_i}
+\end{equation}
+\begin{equation}
+    log \; \mathrm{WL}(\theta; \textbf{X},\textbf{w}) = \sum_{i=1}^m \sum_{j=1}^{n_i} w_i \; f_\theta(y_{ij};\theta)
+\end{equation}
+Donde $\textbf{w}=(w_1, w_2, \dots, w_n)^t$ es el vector de pesos.
+\newpage
+Un caso particular se encuentra en un modelo de proceso de Poisson no homogéneo regido por un parámetro $\theta$~\cite{baddeley2015spatial}.
+\begin{equation}
+    \mathrm{L}(\theta; \textbf{X}) \propto \lambda_\theta(x_1) \lambda_\theta(x_2) \dots \lambda_\theta(x_n) \; exp\left( - \int_W \lambda_\theta(u) \; \mathrm{d} u \right)
+\end{equation}
+En donde $\lambda_\theta(x_1) \lambda_\theta(x_2) \dots \lambda_\theta(x_n)$ explica la contribución por los puntos en las ubicaciones; mientras que $exp\left( - \int_W \lambda_\theta(u) \; \mathrm{d} u \right)$ explica la contribución por el número de puntos observados. 
+
+\section{Enfoque teórico conceptual asumido por el investigador}\label{enfteocon}
+Sea:
+\begin{itemize}
+    \item[] $Y_i$: Resultado de la prueba en el individuo $i$\\
+    $$Y_i \sim Bernoulli(\theta_i) \; , \,Y_i = \left\{ 1: \mathrm{Positivo}\atop 0: \mathrm{Negativo} \right. $$
+    $$f(Y_i=y_i|\;\theta_i) = \theta_i^{y_i} (1-\theta_i)^{1-y_i}$$
+    \item[] $Z_i$: Condición del individuo $i$ en la muestra\\
+    $$Z_i \sim Bernoulli(\pi_i) \; , \, Z_i = \left\{ 1: \mathrm{Seleccionado} \atop 0: \mathrm{No \; seleccionado} \right.$$
+    $$f(Z_i=z_i|\;\pi_i) = \pi^{z_i} (1-\pi_i)^{1-z_i}$$
+\end{itemize}
+Además, cada individuo fue considerado con una realización de un proceso no homogéneo de Poisson; con su respectiva función de intensidad, tanto para la población en general, como aquellos que pertenecen a la muestra.
+
+%\begin{equation*}
+%    p(Y_i=1)=\int p(Y_i|X_i)  p(X_i) \; \mathrm{d} X_i
+%\end{equation*}
+
+
+%\begin{equation*}
+%    p(Y_1,Y_2,\dots,Y_n)=\int f(\textbf{Y}|\textbf{X})  f(\textbf{X}) \; \mathrm{d} \textbf{X}
+%\end{equation*}
+
+%\newpage
+
+\subsection{Determinación del vector de pesos}
+Sea una muestra que se comporta como un proceso de Poisson no homogéneo con función de densidad $\lambda(x_i)$, donde $x_i = (x_{i1},x_{i2})$, la cual proviene de una población cuyo comportamiento es el de un proceso de Poisson no homogéneo con función de densidad $\lambda_p(x_i)$,
+\begin{align*}
+	\lambda(x_i) &= \lambda_p(x_i) h(x_i)\\
+	&= \lambda_p(x_i) exp \left(\beta_0 + h'(x_i)\right)\\
+	\log \lambda(x_i) &= \log \lambda_p(x_i) + \beta_0 + h'(x_i)
+\end{align*}
+donde $\log \lambda_p(x_i)$ es un offset, $\beta_0$ se encuentra asociado a la proporción de muestreo y $\beta_0 + h'(x_i)$ es el efecto del muestreo en cada ubicación $i$. En caso de que no hubiese un sesgo a nivel espacial, $h'(x_i)$ sería 0 y $\log \beta_0$ sería la proporción del muestreo.
+
+El cociente obtenido entre la función de intensidad muestral y la función de intensidad poblacional para una realización $i$ ($\lambda(x_i)/\lambda_p(x_i)$) es entendido como el \textit{riesgo} de participar en la muestra para un individuo $i$. Partiendo de que el riesgo de participar en la muestra no es constante a nivel espacial, el peso asignado para corregir el sesgo sería el valor inverso del riesgo que tuvo el individuo $i$ de participar en la muestra.
+\begin{equation}
+	w_i = \frac{\lambda_p(x_i)}{\lambda(x_i)}
+\end{equation}
+
+\subsubsection{Validación del modelo}
+Para validar los modelos empleados al momento de determinar el vector de pesos $w$, se distribuyó los datos en dos grupos: entrenamiento (train) y prueba (test).
+En ello, utilizando los datos del grupo de entrenamiento, se ajustaron 99 modelos con un número diferente de funciones base para cada uno y se determinó un residual para cada uno. El residual para un proceso puntual ($\mathscr{R}$) para una determinada región B se entiende como la diferencia entre el número de puntos observados y esperados en  la región B:
+\begin{equation}
+	\mathscr{R}(\mathrm{B}) = n(\textbf{x} \cap \mathrm{B}) - \int_{\mathrm{B}} \hat{\lambda} (u) \mathrm{d} u
+\end{equation}
+donde $\textbf{x}$ es el proceso puntual observado, $n(\textbf{x} \cap \mathrm{B})$ es el número de puntos de $\textbf{x}$ en la región B y $\hat{\lambda} (u)$ es la intensidad ajustada~\cite{baddeley2015spatial}.
+Posterior a esto, utilizando el grupo de prueba, se determinó el $\mathscr{R}(\mathrm{B})$ utilizando la función de intensidad ajustada con la información del grupo de entrenamiento. Con esto se seleccionó el número de funciones base que permite ajustar un modelo con menor $\mathscr{R}(\mathrm{B})$ en el grupo de prueba. Esto se ha realizado tanto al estimar la intesidad poblacional, como muestral.
+
+\subsubsection{Prueba de Monte-Carlo para la homogeneidad del riesgo}
+Cuando el riesgo de ser seleccionado en la muestra es constante, y que por ende no existe sesgo de selección, entonces la intensidad muestral es proporcional a la intensidad poblacional. 
+\begin{itemize}
+	\item $\mathrm{H}_0: \lambda(x) / \lambda_p(x) = k $
+	\item $\mathrm{H}_1: \lambda(x) / \lambda_p(x) \neq k $
+\end{itemize}
+La prueba para la validación de la hipótesis nula se detalla en el Algoritmo \ref{validaHipo}, el cual está basado en simulaciones de Monte-Carlo.
+
+\newpage
+
+\begin{algorithm}[H]\label{validaHipo}
+	%\KwData{this text}
+	%\KwResult{how to write algorithm with \LaTeX2e }
+	%initialization\;
+	Se determinan los n puntos de la muestra original \;
+	Se ajusta la intensidad poblacional $\lambda_p(x)$ \;
+	Se evalúa $\lambda_p(x)$ en cada punto de la muestra;
+	\For{j en 1:1000}{
+		Obtener una muestra aleatoria de tamaño $n$ de la población\;
+		Se evalúa $\lambda_{p_j}(x_i)$ en cada punto $i$ de la muestra y se obtiene su logaritmo\;
+		Se ajusta la intesidad muestral $\lambda_j(x)$ con $\log \lambda_{p_j}(x_i)$ como \textit{offset} \;
+		Se evalúa $\lambda_j(x_i)$ en cada punto $i$ de la muestra original\;
+		Se obtiene el cociente $k_{ij} = \lambda_j(x_i) / \lambda_p(x_i)$ en cada punto $i$ de la muestra original
+	}
+	Obtener los percentiles $P^{i}_{2.5}$ y $P^{i}_{97.5}$ para cada $k_{i.}$ \;
+	\eIf{$\forall i \in 1:n, P^{i}_{2.5} < \lambda(x_i) / \lambda_p(x_i) < P^{i}_{97.5} $}{
+		No se rechaza $\mathrm{H}_0$
+	}{
+		Se rechaza $\mathrm{H}_0$
+	}
+	\caption{Validación de Hipótesis}
+\end{algorithm}
+
+
+\newpage
+
+\subsection{Estimación de la prevalencia}
+Dado que el fin es estimar la prevalencia de la enfermedad en el centro poblado, fue necesario ajustar un GAM ponderado, con $\textbf{w}=\left\{w_1,w_2,\dots,w_n \right\}$ como vector de pesos, en cada individuo participante de la muestra. Posterior a ello, el modelo se emplearía para estimar la prevalencia de la enfermedad en cada individuo de la población que no pertenece a la muestra ($n^*_1$ y $n^*_0$ para el número estimado de casos y controles, respectivamente). Con estos valores, se estimó una prevalencia corregida.
+\begin{equation}
+	\tilde{p} = \frac{n_1 + n^*_1}{n_1 + n^*_1 + n_0 + n^*_0}
+\end{equation}
+
+\subsubsection{Validación del modelo}
+A fin de evitar un posible sobreajuste o subajuste en la estimación, es necesario particionar la información proveniente de la muestra en dos grupos: entrenamiento y prueba. El modelo se ajustó usando el grupo de entrenamiento y se obtuvieron las métricas de ajuste (especificidad, sensibilidad y AUC) tanto en el grupo de entrenamiento, como en el grupo de prueba~\cite{friedman2001elements}.
+
+\subsection{Factor de corrección en estudios de casos y controles}
+Supongase la Tabla \ref{tab2x2}. En esta, la correcta estimación de la prevalencia ($\hat{\theta}$) se da cuando su valor es el mismo tanto en la muestra como en la población empleando la Ecuación \ref{estpropcant}.
+\begin{table}[htbp]
+  \caption{Caso-control con \textit{ser seleccionado en la muestra} como exposición}\label{tab2x2}
+  \centering
+  %
+    \begin{tabular}{rr|cc|c}
+    \toprule
+          &       & \multicolumn{2}{l|}{\textbf{Enfermedad}} &  \\
+          &       & Positivo & Negativo & \textbf{Total} \\
+    \midrule
+    \multicolumn{1}{l}{\textbf{Muestra}} & Seleccionado & $n_1$     & $n_0$     & $n$ \\
+          & No seleccionado & $a$     & $b$     & $N-n$ \\
+    \midrule
+          & \textbf{Población} & $N_1$   & $N_0$   & $N$ \\
+    \bottomrule
+    \end{tabular}%
+\end{table}%
+\begin{equation*}
+    \theta \; = \; \cfrac{n_1}{n_1 + n_0} \; = \; \cfrac{N_1}{N_1 + N_0} 
+\end{equation*}
+No obstante, la proporción entre casos y controles no suele mantenerse constante entre la población y la muestra por las caracteristicas propias del estudio durante su etapa de recolección de información. Esto causa que el valor de $\theta$ sea obtenido mediante un estimador de máxima verosimilitud ponderado $\tilde{\theta}$ con $\textbf{w}=(w_1,w_2)^t$ como vector de pesos para los casos y los controles. Partiendo de $Y_i \sim Bernoulli(\theta)$,
+\begin{align*}
+\mathrm{WL}(\theta;\textbf{Y},\textbf{w}) &=  \prod_{i=1}^2 \prod_{j=1}^{n_i} \left[ \theta^{y_j} \; (1-\theta)^{1-y_j}\right]^{w_i} \\
+log\;\mathrm{WL}(\theta;\textbf{Y},\textbf{w}) &= \sum_{i=1}^2 \sum_{j=1}^{n_i} w_i \; log \left[ \theta^{y_j} \; (1-\theta)^{1-y_j}\right] \\
+log\;\mathrm{WL}(\theta;\textbf{Y},\textbf{w}) &= \sum_{i=1}^2 \sum_{j=1}^{n_i} w_i \;  \left[ y_j \; log(\theta) + (1-y_j) \; log (1-\theta) \right]\\
+log\;\mathrm{WL}(\theta;\textbf{Y},\textbf{w}) &= w_1 n_1\;log(\theta) + w_2 \; n_0 \; log (1-\theta)
+\end{align*}
+Al máximizar esta función,
+\begin{align*}
+\frac{\partial}{\partial \theta} \; log\; \mathrm{WL} (\theta;\textbf{Y},\textbf{w}) &= 0\\
+\frac{\partial}{\partial \theta} \; log\; \mathrm{WL} (\theta;\textbf{Y},\textbf{w}) &= \frac{n_1}{\theta}  - \frac{\rho \; n_0}{1-\theta} = 0
+\end{align*}
+Lo cual da como resultado que:
+\begin{equation*}
+    \tilde{\theta} = \frac{w_1 n_1}{w_1 n_1 + w_2 \; n_0}
+\end{equation*}
+Si $\textbf{w}=(w_1,w_2)^t=(1,\rho)^t$,
+\begin{equation}
+    \tilde{\theta} = \frac{n_1}{n_1 + \rho \; n_0}
+\end{equation}
+Entonces una estimación correcta de $\tilde{\theta}$ se da cuando matemáticamente el valor de $\rho$ es equivalente al Odds Ratio (OR) entre la muestra y la población.
+\begin{equation} \label{rho}
+    \rho \; = \; \cfrac{n_1N_0}{n_0N_1}
+\end{equation}
+%Por otro lado, basado en lo presentado en apartado sobre el \textit{número esperado de puntos}, este factor de corrección puede ser determinado de la siguiente manera:
+%\begin{equation}
+%    \rho \; =  \;
+%    \cfrac{\bigintsss\bigintsss_{X} \; \lambda(x,y) f_{\theta}(x,y) f_{\pi}(x,y)  \mathrm{d}x\mathrm{d}y \;
+%    \bigintsss\bigintsss_{X} \; \lambda(x,y) (1-f_{\theta} (x,y) )  \mathrm{d}x\mathrm{d}y}
+%    {\bigintsss\bigintsss_{X} \; \lambda(x,y) (1-f_{\theta}(x,y)) f_{\pi}(x,y)  \mathrm{d}x\mathrm{d}y \;
+%    \bigintsss\bigintsss_{X} \; \lambda(x,y) f_{\theta} (x,y)  \mathrm{d}x\mathrm{d}y}
+%\end{equation}
+Esto se aplica directamente en la estimación de la probabilidad de que un determinado individuo ubicado en un determinado punto en el espacio (x,y) sea un caso:
+\begin{equation} \label{intesidad_rho}
+    \hat{p}(x,y) = \cfrac{\hat{\lambda}_1(x,y)}{\hat{\lambda}_1(x,y)+ \rho \hat{\lambda}_0(x,y)}
+\end{equation}
+Donde
+\begin{itemize}[noitemsep,nolistsep]
+    \item[] $\hat{\lambda}_1$: Función de intensidad de los casos en la muestra
+    \item[] $\hat{\lambda}_0$: Función de intensidad de los controles en la muestra
+\end{itemize}
+
+
+\subsection{Consideraciones para la simulación}\label{ConsiSimu}
+
+Dado que $\pi$ y $\theta$ son probabilidades, entonces sus valores deben estar entre 0 y 1. Para esto, la formula espacial para cada una de estas ha de ser de la siguiente manera:
+\begin{align*}
+	f_\theta(x,y) &= \cfrac{1}{1+e^{-\mu_\theta(x,y)}}\\
+	f_\pi(x,y) &= \cfrac{1}{1+e^{-\mu_\pi(x,y)}}
+\end{align*}
+Donde:
+\begin{equation*}
+	\mu(x,y) = \alpha + g_1(x) + g_2(y)
+\end{equation*}
+%Como resultado, las funciones planteadas en el punto anterior pueden ser expresadas como estan a continuación:
+%\begin{equation*}
+%	\lambda_\theta(x,y) = \cfrac{\lambda(x,y)}{1+e^{-\mu_\theta(x,y)}}
+%\end{equation*}
+%\begin{equation*}
+%	\lambda_\pi(x,y) = \cfrac{\lambda(x,y)}{1+e^{-\mu_\pi(x,y)}}
+%\end{equation*}
+%\begin{equation*}
+%	\lambda_{\theta_\pi}(x,y) = \cfrac{\lambda(x,y)}{(1+e^{-\mu_\theta(x,y)})(1+e^{-\mu_\pi(x,y)})}
+%\end{equation*}
+%\begin{equation*}
+%	\hat{p} = \cfrac{\bigint\bigint_X  \cfrac{\lambda(x,y)}{(1+\exp{\left[-\mu_\theta(x,y) \right]})(1+\exp{\left[-\mu_\pi(x,y) \right]})} \mathrm{d}x\mathrm{d}y}{\bigint\bigint_X  \cfrac{\lambda(x,y)}{(1+\exp{\left[-\mu_\pi(x,y) \right]})} \mathrm{d}x\mathrm{d}y}
+%\end{equation*}
+%\newpage
+Además, se definió a la función de intensidad $\lambda$ como:
+\begin{equation*}
+    \lambda(x,y) = c_\lambda \left(1 - \sqrt{\cfrac{a_\lambda(x-h_\lambda)^2 + b_\lambda(y-k_\lambda)^2}{a_\lambda h_\lambda^2+b_\lambda k_\lambda^2}} \right)
+\end{equation*}
+Las funciones de intensidad $\lambda_\pi$ y $\lambda_{\theta_\pi}$ se comportan como:
+\begin{align*}
+	\lambda_{\pi}(x,y) &= \cfrac{c_\lambda}{(1+\exp{\left[-\mu_\pi(x,y) \right]})} \left(1 - \sqrt{\cfrac{a_\lambda(x-h_\lambda)^2 + b_\lambda(y-k_\lambda)^2}{a_\lambda h_\lambda^2+b_\lambda k_\lambda^2}} \right)\\
+	\lambda_{\theta_\pi}(x,y) &= \cfrac{c_\lambda}{(1+\exp{\left[-\mu_\theta(x,y) \right]})(1+\exp{\left[-\mu_\pi(x,y) \right]})} \left(1 - \sqrt{\cfrac{a_\lambda(x-h_\lambda)^2 + b_\lambda(y-k_\lambda)^2}{a_\lambda h_\lambda^2+b_\lambda k_\lambda^2}} \right)
+\end{align*}
+Delimitando que:
+\begin{align*}
+	\mu_\theta(x,y) &= c_\theta + a_\theta(x-h_\theta)^2 + b_\theta(y-k_\theta)^2\\
+	\mu_\pi(x,y) &= c_\pi + a_\pi(x-h_\pi)^2 + b_\pi(y-k_\pi)^2
+\end{align*}
+
+%Con ello se puede observar que una selección de muestra no homogénea, afecta la intensidad de los puntos a nivel espacial. Esto tanto de forma teórica como simulada.
+
+
+
+
+\newpage
+
+
+\section{Marco legal}
+La presente investigación se realizó gracias al apoyo del fondo EULAC por medio de FONDECYT. En relación a la parte ética de esto, el estudio madre cuenta con la aprobación ética de la Universidad Peruana Cayetano Heredia,  tanto en la recolección de datos como en el manejo de la información (ver Anexo \ref{EM_apet}). Al ser un estudio secundario, la integridad de los participantes no se ha visto comprometida más allá de su privacidad. Por lo cual, con el fin de proteger la dicha privacidad se está trabajando con los código autogenerados de cada uno.
+
+
+\section{Hipótesis}
+
+\subsection{Hipótesis General}
+
+\begin{itemize}
+	\item El método planteado en la presente investigación permite estimar la prevalencia de forma insesgada.
+\end{itemize}
+
+
+\subsection{Hipótesis Específicas}
+\begin{itemize}
+    \item El método planteado en la presente investigación por lo general estima de una mejor forma la prevalencia que el método tradicional.
+    \item El método planteado en la presente investigación es el adecuado para la situación que se está observando.
+    \item el método planteado en la presente investigación puede ser utilizado en otros centros poblados.
+\end{itemize}

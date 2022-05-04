@@ -1,0 +1,148 @@
+---
+title: "Split - Corpacancha"
+output: html_document
+---
+```{r}
+git_path <- function() {
+  system('git rev-parse --show-toplevel', intern = TRUE)
+}
+proj_path <- git_path()
+source(file.path(proj_path,"src","kml_df.R"))
+source(file.path(proj_path,"src","data_ppp.R"))
+source(file.path(proj_path,"src","win_ppp.R"))
+source(file.path(proj_path,"src","evaluate.R"))
+source(file.path(proj_path,"src","inference.R"))
+```
+
+## Leyendo la bases limpias y cargando los paquetes
+
+```{r}
+library(spatstat)
+library(sf)
+library(mgcv)
+library(splines)
+library(pROC)
+library(mgcv)
+datos_consolidados <- readRDS(file.path(proj_path,"data","processed","datos_corpacancha_poblacion.rds"))
+datos_virsel <- readRDS(file.path(proj_path,"data","processed","datos_corpacancha_muestra.rds"))
+corpacancha_household <- readRDS(file.path(proj_path,"data","cleaned","corpacancha_household.rds"))
+corpacancha_household_df <- kml_df(corpacancha_household)
+win <- win_ppp(datos_consolidados,corpacancha_household_df)
+consolidados_ppp <- data_ppp(datos_consolidados,win)
+virsel_ppp <- data_ppp(datos_virsel,win)
+```
+
+```{r}
+set.seed(1234)
+ss <- sample(1:24,8,replace=F)
+temporal_1 <- consolidados_ppp
+temporal_1$window <- as.owin(quadrats(consolidados_ppp, 5, 5)[ss[1]])
+temporal_2 <- consolidados_ppp
+temporal_2$window <- as.owin(quadrats(consolidados_ppp, 5, 5)[ss[2]])
+temporal_3 <- consolidados_ppp
+temporal_3$window <- as.owin(quadrats(consolidados_ppp, 5, 5)[ss[3]])
+temporal_4 <- consolidados_ppp
+temporal_4$window <- as.owin(quadrats(consolidados_ppp, 5, 5)[ss[4]])
+temporal_5 <- consolidados_ppp
+temporal_5$window <- as.owin(quadrats(consolidados_ppp, 5, 5)[ss[5]])
+temporal_6 <- consolidados_ppp
+temporal_6$window <- as.owin(quadrats(consolidados_ppp, 5, 5)[ss[6]])
+temporal_7 <- consolidados_ppp
+temporal_7$window <- as.owin(quadrats(consolidados_ppp, 5, 5)[ss[7]])
+temporal_8 <- consolidados_ppp
+temporal_8$window <- as.owin(quadrats(consolidados_ppp, 5, 5)[ss[8]])
+train_consolidados_ppp <- subset.ppp(consolidados_ppp, !(dplyr::between(x,
+                              temporal_1$window$xrange[1],
+                              temporal_1$window$xrange[2]) & dplyr::between(y,
+                              temporal_1$window$yrange[1],
+                              temporal_1$window$yrange[2]) ) | (dplyr::between(x,
+                              temporal_2$window$xrange[1],
+                              temporal_2$window$xrange[2]) & dplyr::between(y,
+                              temporal_2$window$yrange[1],
+                              temporal_2$window$yrange[2]) ) | (dplyr::between(x,
+                              temporal_3$window$xrange[1],
+                              temporal_3$window$xrange[2]) & dplyr::between(y,
+                              temporal_3$window$yrange[1],
+                              temporal_3$window$yrange[2]) ) | (dplyr::between(x,
+                              temporal_4$window$xrange[1],
+                              temporal_4$window$xrange[2]) & dplyr::between(y,
+                              temporal_4$window$yrange[1],
+                              temporal_4$window$yrange[2]) ) | (dplyr::between(x,
+                              temporal_5$window$xrange[1],
+                              temporal_5$window$xrange[2]) & dplyr::between(y,
+                              temporal_5$window$yrange[1],
+                              temporal_5$window$yrange[2]) ) | (dplyr::between(x,
+                              temporal_6$window$xrange[1],
+                              temporal_6$window$xrange[2]) & dplyr::between(y,
+                              temporal_6$window$yrange[1],
+                              temporal_6$window$yrange[2]) )| (dplyr::between(x,
+                              temporal_7$window$xrange[1],
+                              temporal_7$window$xrange[2]) & dplyr::between(y,
+                              temporal_7$window$yrange[1],
+                              temporal_7$window$yrange[2]) )| (dplyr::between(x,
+                              temporal_8$window$xrange[1],
+                              temporal_8$window$xrange[2]) & dplyr::between(y,
+                              temporal_8$window$yrange[1],
+                              temporal_8$window$yrange[2]) ))
+```
+
+
+```{r}
+set.seed(1234)
+ss <- sample(1:24,8,replace=F)
+temporal_1 <- virsel_ppp
+temporal_1$window <- as.owin(quadrats(virsel_ppp, 5, 5)[ss[1]])
+temporal_2 <- virsel_ppp
+temporal_2$window <- as.owin(quadrats(virsel_ppp, 5, 5)[ss[2]])
+temporal_3 <- virsel_ppp
+temporal_3$window <- as.owin(quadrats(virsel_ppp, 5, 5)[ss[3]])
+temporal_4 <- virsel_ppp
+temporal_4$window <- as.owin(quadrats(virsel_ppp, 5, 5)[ss[4]])
+temporal_5 <- virsel_ppp
+temporal_5$window <- as.owin(quadrats(virsel_ppp, 5, 5)[ss[5]])
+temporal_6 <- virsel_ppp
+temporal_6$window <- as.owin(quadrats(virsel_ppp, 5, 5)[ss[6]])
+temporal_7 <- virsel_ppp
+temporal_7$window <- as.owin(quadrats(virsel_ppp, 5, 5)[ss[7]])
+temporal_8 <- virsel_ppp
+temporal_8$window <- as.owin(quadrats(virsel_ppp, 5, 5)[ss[8]])
+train_virsel_ppp <- subset.ppp(virsel_ppp, !(dplyr::between(x,
+                      temporal_1$window$xrange[1],
+                      temporal_1$window$xrange[2]) & dplyr::between(y,
+                      temporal_1$window$yrange[1],
+                      temporal_1$window$yrange[2]) ) | (dplyr::between(x,
+                      temporal_2$window$xrange[1],
+                      temporal_2$window$xrange[2]) & dplyr::between(y,
+                      temporal_2$window$yrange[1],
+                      temporal_2$window$yrange[2]) ) | (dplyr::between(x,
+                      temporal_3$window$xrange[1],
+                      temporal_3$window$xrange[2]) & dplyr::between(y,
+                      temporal_3$window$yrange[1],
+                      temporal_3$window$yrange[2]) ) | (dplyr::between(x,
+                      temporal_4$window$xrange[1],
+                      temporal_4$window$xrange[2]) & dplyr::between(y,
+                      temporal_4$window$yrange[1],
+                      temporal_4$window$yrange[2]) ) | (dplyr::between(x,
+                      temporal_5$window$xrange[1],
+                      temporal_5$window$xrange[2]) & dplyr::between(y,
+                      temporal_5$window$yrange[1],
+                      temporal_5$window$yrange[2]) ) | (dplyr::between(x,
+                      temporal_6$window$xrange[1],
+                      temporal_6$window$xrange[2]) & dplyr::between(y,
+                      temporal_6$window$yrange[1],
+                      temporal_6$window$yrange[2]) )| (dplyr::between(x,
+                      temporal_7$window$xrange[1],
+                      temporal_7$window$xrange[2]) & dplyr::between(y,
+                      temporal_7$window$yrange[1],
+                      temporal_7$window$yrange[2]) )| (dplyr::between(x,
+                      temporal_8$window$xrange[1],
+                      temporal_8$window$xrange[2]) & dplyr::between(y,
+                      temporal_8$window$yrange[1],
+                      temporal_8$window$yrange[2]) ))
+```
+
+
+```{r}
+saveRDS(train_consolidados_ppp,file.path(proj_path,"data","processed","train_corpacancha_poblacion_ppp.rds"))
+saveRDS(train_virsel_ppp,file.path(proj_path,"data","processed","train_corpacancha_muestra_ppp.rds"))
+```

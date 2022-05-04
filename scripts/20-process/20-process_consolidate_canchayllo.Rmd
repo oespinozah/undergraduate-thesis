@@ -1,0 +1,70 @@
+---
+title: "Consolidación de la base de datos"
+output: html_document
+prerequisites:
+  - corpacancha_household.rds
+  - data/cleaned/BaseCorpacancha.rds
+target: 
+  - data/processed/consolidados_corpacancha.rds
+---
+
+```{r}
+git_path <- function() {
+  system('git rev-parse --show-toplevel', intern = TRUE)
+}
+proj_path <- git_path()
+source(file.path(proj_path,"src","kml_df.R"))
+```
+
+## Leyendo la base y las coordenadas limpias y cargando los paquetes
+
+```{r}
+library(sf)
+library(lwgeom)
+proj_path <- git_path()
+datos_personas <- readRDS(file.path(proj_path,"data","cleaned","BaseCanchayllo.rds"))
+canchayllo_household <- readRDS(file.path(proj_path,"data","cleaned","canchayllo_household.rds"))
+canchayllo_household_df <- kml_df(canchayllo_household)
+```
+
+
+## Consolidamos en una base
+
+```{r}
+names(datos_personas)[1] <- "ncasa"
+datos_consolidados <- merge(datos_personas,canchayllo_household_df,
+                            by="ncasa", all.x=TRUE)
+datos_consolidados <- datos_consolidados[!is.na(datos_consolidados$longitud),]
+#Extraemos las coordenadas para el centro de EsSalud
+#EsSalud <- corpacancha_household_df[184,]
+datos_consolidados$longitud <- as.numeric(datos_consolidados$longitud)
+datos_consolidados$latitud <- as.numeric(datos_consolidados$latitud)
+```
+
+# Dividimos en población y muestra
+
+```{r}
+#Ordenamos los factores
+datos_consolidados$sex <- factor(as.numeric(
+  datos_consolidados$sex == "M"),
+  labels = c("M","H"),levels = c(0,1))
+datos_consolidados$perros_cant_factor <- factor(datos_consolidados$perros_cant)
+datos_consolidados$perros3 <- factor(datos_consolidados$perros3)
+#Extraemos otra base solo con los que participaron en el estudios
+datos_muestra <- datos_consolidados[datos_consolidados$participa=="participó",
+                                    c("ncasa", "codpac", "Edad", "sex", "rango_edad",
+                                      "perros_cant", "perros3", "perros_cant_factor",
+                                      "longitud","latitud","resultado")]
+#Ordenamos los factores
+datos_muestra$resultado <- factor(as.numeric(
+  datos_muestra$resultado == "positivo"),
+  labels = c("negativo","positivo"),
+  levels = c(0,1))
+```
+
+
+```{r}
+saveRDS(datos_consolidados,file.path(proj_path,"data","processed","datos_canchayllo_poblacion.rds"))
+saveRDS(datos_muestra,file.path(proj_path,"data","processed","datos_canchayllo_muestra.rds"))
+```
+

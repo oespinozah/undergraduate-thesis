@@ -1,0 +1,110 @@
+\section{Marco Teórico}
+\subsection{Antecedentes de la investigación}
+Estudios realizados en China han considerado la heterogeneidad de la probabilidad que tiene cada individuo en ser seleccionado para una muestra al momento de la estimación del número de pacientes que padecen cierta enfermedad, tratando la información obtenida bajo un enfoque bayesiano~\cite{bailly2015bayesian}. De igual forma, el poder considerar la distribución espacial de los individuos capturados en una determinada muestra es empleado en el campo de la ecología~\cite{Royle2014Spatial}; lo cual puede llegar a ser replicado en el campo de las ciencias epidemiológicas~\cite{braeye2016capture}. Finanlmente, es necesario mencionar que estudios anteriores realizado en la zona de Junin solo han empleado métodos tradicionales para la estimación de la prevalencia~\cite{santivanez2010factores}.
+
+\subsection{Bases Teóricas Generales}
+\subsubsection{Hidatidosis Humana}\label{hidat}
+La echinococcosis quística o hidatidosis humana (también conocida solo como \textit{Hidatidosis}) es una zoonosis (enfermedad transmitida de animales a humanos) parasitaria incluída en la lista de enfermedades tropicales desatendidas por la OMS \cite{sarkar2017cystic}. Es causada por el parásito \textit{Echinococcus granulosus} en su estadío larvareo \cite{giri2012review}. Este parásito requiere dos hospederos mamíferos para completar su ciclo de vida: El ganado ovino (ovejas), quien es el hospedero intermediario, y el perro, como el hospedero definitivo. Este último adquiere el parásito alimentándose de vísceras de oveja infectadas con el parásito. El hombre podría considerarse como un hospedero intermediario \textit{accidental} causado por el consumo de alimentos o agua contaminada con huevos presentes en las heces de los perros. Una vez adquirido el parásito, estos huevos eclosionan en el intestino delgado del hombre, en donde pasan a la circulación venosa hasta alojarse en el hígado (principal localización), pulmón (segunda localización de importancia) u otra víscera o tejido, donde se formará el quiste hidatídico~\cite{moro2009echinococcosis}.
+
+\newpage
+\subsection{Bases Teóricas Estadísticas}
+\subsubsection{Estimación de una proporción poblacional}
+Si seleccionamos una muestra aleatoria de tamaño $n$, la proporción muestral $\hat{p}$ es la fracción de elementos de la muestra que poseen la característica de interés; para nuestro caso, esta será que el paciente sea positivo frente a tener la enfermedad. De esta forma, podemos decir que $\hat{p}$ se puede estimar de la siguiente manera~\cite{scheaffer2006elementos}:
+
+\begin{equation*}
+    \hat{p} = \frac{n_+}{n}
+\end{equation*}
+
+Donde:\\
+\hspace*{2cm} $n_+$: Número de casos positivos en la muestra\\
+\hspace*{2cm} $n$\hspace*{0.27cm}: Tamaño de la muestra\\
+
+Si a los valores de la muestra se les asigna un valor numérico (Positivo: X=1, Negativo: X=0), entonces la estimación de $\hat{p}$ puede ser expresada de la siguiente manera:
+
+\begin{equation}
+    \hat{p} = \frac{\sum_{i=1}^{n}{x_i}}{n}
+\end{equation}
+
+Cuando $n$ es lo suficientemente grande, el intervalo de confianza (a un determinado $\alpha$) se puede determinar de la siguiente manera:
+
+\begin{equation}
+    \hat{p} \hspace{0.2cm} \pm \hspace{0.2cm} Z_{1-\alpha/2} \sqrt{\frac{\hat{p}(1-\hat{p})}{n-1} \left( \frac{N-n}{N} \right)}
+\end{equation}
+
+Donde:
+
+\begin{itemize}
+    \item[] $N:$ Tamaño poblacional
+    \item[] $n:$ Tamaño de la muestra
+    \item[] $Z_{1-\alpha/2}:$ Valor de $1-\alpha/2$ en la distribución normal
+\end{itemize}
+
+\subsubsection{Sesgo}
+Al ser desconocido un parámetro $\theta$, no es posible conocerte hasta que punto un estimador $\hat{\theta}$ se encuentra lejos o cerca de su verdadero valor. El error que aparece al tomar como verdadero al valor del estimador $\hat{\theta}$ es la diferencia entre $\theta - \hat{\theta}$. Si se pudiera obtener todas las posibles muestras y para cada una de ellas su correspondiente estimación, entonces una media de los errores vendría a ser el error cuadrático medio (ECM):
+
+$$ECM (\hat{\theta}) = E (\theta - \hat{\theta})^2$$
+Efectuando y ordenando:
+
+$$ECM (\hat{\theta}) = V( \hat{\theta} ) + [\theta - E (\hat{\theta})]^2$$
+
+En donde la expresión $\theta - E (\hat{\theta})$ será denominada como sesgo\cite{ruiz2004fundamentos}. Adicionalmente, es necesario hacer mención que desde un punto de vista epidemiológico, el sesgo puede ser entendido como un error sistemático en el diseño de un estudio que resulta en un error en la estimación. Cuando el error es producción durante el proceso de selección de los individuos de la muestra, recibe el nombre de sesgo de selección \cite{celentano2019gordis}.
+
+
+\subsection{Enfoque teórico conceptual asumido por el investigador}
+Sea 
+\begin{itemize}
+    \item[] $Y$: El individuo fue seleccionado en la muestra
+    \item[] $X$: Númereo de individuos en la muestra que son positivos a hidatidosis
+\end{itemize}
+$$Y = \left\{
+1: Si\atop
+0:No
+\right.$$
+$$X = 0, 1, \ldots, n$$
+
+Tenemos:
+
+$$Y \sim bernoulli(\pi)$$
+$$X \sim binomial(n,\theta)$$
+
+Donde:
+
+\begin{itemize}
+    \item[] $n:$ Tamaño de la muestra
+    \item[] $\pi:$ Probabilidad de ser seleccionado en la muestra
+    \item[] $\theta:$ Proporción de individuos positivos a la enfermedad en la muestra
+\end{itemize}
+
+Así mismo, $\pi$ (la probabiliad de que un individuo sea seleccionado para la muestra) se puede obtener por medio de un Modelo Lineal Generalizado Espacial, dado a que se parte de la premisa de que esta probabilidad de selección es heterogénea y depende del lugar en donde vive cada uno respecto al centro de salud.
+
+\newpage
+\subsection{Hipótesis}
+\subsubsection{Hipótesis General}
+El método planteado en la presente investigación estima la prevalencia ($\hat{\theta}$) de forma insesgada
+\begin{itemize}
+    \item[] H$_0$: $\theta - E (\hat{\theta}) = 0$
+    \item[] H$_1$: $\theta - E (\hat{\theta}) \neq 0$
+\end{itemize}
+
+\subsubsection{Hipótesis Específicas}
+\begin{itemize}
+    \item El método planteado en la presente investigación presenta un menor Error Cuadrático Medio (ECM) en la estimación de la prevalencia ($\hat{\theta}_P$) que el método tradicional ($(\hat{\theta}_T$)
+\end{itemize}
+
+\begin{itemize}
+    \item[] H$_0$: $\frac{ECM(\hat{\theta}_P)}{ECM(\hat{\theta}_T)} \geq 1$
+    \item[] H$_1$: $\frac{ECM(\hat{\theta}_P)}{ECM(\hat{\theta}_T)} < 1$
+\end{itemize}
+
+\begin{itemize}    
+    \item El método planteado es el adecuado para la situación que se está observando
+\end{itemize}
+
+\subsection{Variables}
+Las variables con las que trabajaremos serán:
+\begin{itemize}
+    \item Prevalencia
+    \item Presencia de la enfermedad en el individuo
+    \item Campaña en la que el individuo fue estudiado
+    \item Ubicación de la vivienda del individuo
+\end{itemize}

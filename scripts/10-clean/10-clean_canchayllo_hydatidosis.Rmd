@@ -1,0 +1,59 @@
+---
+title: "Limpieza de base de datos de la población de Canchayllo"
+output: html_document
+---
+
+```{r}
+git_path <- function() {
+  system('git rev-parse --show-toplevel', intern = TRUE)
+}
+```
+
+## Leyendo la base de Canchayllo y cargando los paquetes
+
+```{r}
+library(dplyr)
+library(readxl)
+proj_path <- git_path()
+resultados_2019 <- read_excel(file.path(proj_path,"data","raw","bd_canchayllo.xlsx"), sheet = "resultados_2019")
+personas <- read_excel(file.path(proj_path,"data","raw","bd_canchayllo.xlsx"), sheet = "personas")
+hogares <- read_excel(file.path(proj_path,"data","raw","bd_canchayllo.xlsx"), sheet = "hogares")
+```
+
+
+
+```{r}
+personas <- personas[!is.na(personas$codpac),c(1,2,5,7)]
+personas <- merge(personas,resultados_2019,by = "codpac", all.x = T)
+personas <- personas[,c("codpac", "hogar", "sex", "edad", "Edad",  "dx_final", "Serología")]
+personas$participa <- ifelse(!is.na(personas$Serología),"participó","no participó")
+personas$resultado <- NA
+personas$resultado[personas$participa=="participó"] <- "negativo"
+personas$Serología[is.na(personas$Serología)] <- 0
+personas$resultado[!is.na(personas$dx_final) | personas$Serología == "Positivo"] <- "positivo"
+personas$Edad[is.na(personas$Edad)] <- personas$edad[is.na(personas$Edad)]
+canchayllo_consolidado <- merge(personas,hogares,by = "hogar", all.x = T)
+canchayllo_consolidado <- canchayllo_consolidado[,c("hogar", "codpac", "Edad",
+                                                    "sex", "perros_cant","participa","resultado")]
+canchayllo_consolidado <- canchayllo_consolidado[!is.na(canchayllo_consolidado$Edad),]
+```
+
+## Realizamos la limpieza de la base de datos y la imputación de los datos perdidos
+
+```{r}
+canchayllo_consolidado$rango_edad <- NA
+canchayllo_consolidado$rango_edad[dplyr::between(canchayllo_consolidado$Edad,0,15)] <- 1
+canchayllo_consolidado$rango_edad[dplyr::between(canchayllo_consolidado$Edad,16,30)] <- 2
+canchayllo_consolidado$rango_edad[dplyr::between(canchayllo_consolidado$Edad,31,50)] <- 3
+canchayllo_consolidado$rango_edad[dplyr::between(canchayllo_consolidado$Edad,51,100)] <- 4
+canchayllo_consolidado$perros_cant[is.na(canchayllo_consolidado$perros_cant)] <- 0
+canchayllo_consolidado$perros3 <- as.factor(ifelse(canchayllo_consolidado$perros_cant>=3,
+                                 "Al menos 3 perros","Menos de 3 perros"))
+```
+
+
+## Guardamos la base de datos limpia
+
+```{r}
+saveRDS(canchayllo_consolidado,file.path(proj_path,"data","cleaned","BaseCanchayllo.rds"))
+```

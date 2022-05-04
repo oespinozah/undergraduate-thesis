@@ -1,0 +1,68 @@
+\babel@toc {spanish}{}
+\contentsline {section}{INTRODUCCIÓN}{10}{chapter*.7}%
+\contentsline {chapter}{\numberline {I}PLANTEAMIENTO DEL PROBLEMA}{11}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Descripción de la situación problemática}{11}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Formulación del problema}{13}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}Problema General}{13}{subsection.1.2.1}%
+\contentsline {subsection}{\numberline {1.2.2}Problemas Específicos}{13}{subsection.1.2.2}%
+\contentsline {section}{\numberline {1.3}Objetivos de la investigación}{14}{section.1.3}%
+\contentsline {subsection}{\numberline {1.3.1}Objetivos General}{14}{subsection.1.3.1}%
+\contentsline {subsection}{\numberline {1.3.2}Objetivos Específicos}{14}{subsection.1.3.2}%
+\contentsline {section}{\numberline {1.4}Justificación, alcances y limitaciones de la investigación}{15}{section.1.4}%
+\contentsline {chapter}{\numberline {II}MARCO TEÓRICO CONCEPTUAL}{16}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Antecedentes}{16}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Bases Teóricas}{17}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Bases Teóricas Generales}{17}{subsection.2.2.1}%
+\contentsline {subsubsection}{Hidatidosis Humana}{17}{section*.8}%
+\contentsline {subsection}{\numberline {2.2.2}Bases Teóricas Estadísticas}{18}{subsection.2.2.2}%
+\contentsline {subsubsection}{Estimación de una proporción poblacional}{18}{section*.9}%
+\contentsline {subsubsection}{Potencia estadística}{19}{section*.10}%
+\contentsline {subsubsection}{Sesgo}{19}{section*.11}%
+\contentsline {subsubsection}{Procesos Puntuales Espaciales}{20}{section*.12}%
+\contentsline {subsubsection}{Procesos de Poisson}{20}{section*.13}%
+\contentsline {subsubsection}{Procesos de Poisson Marcados}{21}{section*.14}%
+\contentsline {subsubsection}{Número esperado de puntos}{21}{section*.15}%
+\contentsline {subsubsection}{Estudios de casos y controles}{24}{section*.17}%
+\contentsline {subsubsection}{Modelos Aditivos Generalizados (GAM)}{24}{section*.19}%
+\contentsline {subsubsection}{Función de Verosimilitud (L)}{25}{section*.20}%
+\contentsline {section}{\numberline {2.3}Enfoque teórico conceptual asumido por el investigador}{26}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Determinación del vector de pesos}{27}{subsection.2.3.1}%
+\contentsline {subsubsection}{Validación del modelo}{27}{section*.21}%
+\contentsline {subsubsection}{Prueba de Monte-Carlo para la homogeneidad del riesgo}{28}{section*.22}%
+\contentsline {subsection}{\numberline {2.3.2}Estimación de la prevalencia}{30}{subsection.2.3.2}%
+\contentsline {subsubsection}{Validación del modelo}{30}{section*.23}%
+\contentsline {subsection}{\numberline {2.3.3}Factor de corrección en estudios de casos y controles}{30}{subsection.2.3.3}%
+\contentsline {subsection}{\numberline {2.3.4}Consideraciones para la simulación}{32}{subsection.2.3.4}%
+\contentsline {section}{\numberline {2.4}Marco legal}{34}{section.2.4}%
+\contentsline {section}{\numberline {2.5}Hipótesis}{34}{section.2.5}%
+\contentsline {subsection}{\numberline {2.5.1}Hipótesis General}{34}{subsection.2.5.1}%
+\contentsline {subsection}{\numberline {2.5.2}Hipótesis Específicas}{34}{subsection.2.5.2}%
+\contentsline {chapter}{\numberline {III}MARCO METODOLÓGICO}{35}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Tipo, nivel y diseño de la investigación}{35}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Población, muestra y tamaño de muestra}{36}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Técnicas de análisis e instrumentos}{37}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Análisis de datos}{37}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Instrumentos de medición}{38}{subsection.3.3.2}%
+\contentsline {section}{\numberline {3.4}Cuadro de operacionalización de variables}{40}{section.3.4}%
+\contentsline {section}{\numberline {3.5}Matriz de consistencia}{40}{section.3.5}%
+\contentsline {chapter}{\numberline {IV}ANÁLISIS Y RESULTADOS}{42}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Análisis Exploratorio}{42}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Análisis de los factores de riesgo}{47}{subsection.4.1.1}%
+\contentsline {subsubsection}{Sexo}{48}{section*.38}%
+\contentsline {subsubsection}{Edad}{49}{section*.41}%
+\contentsline {subsubsection}{Número de perros}{50}{section*.43}%
+\contentsline {subsection}{\numberline {4.1.2}Análisis de la intensidad}{51}{subsection.4.1.2}%
+\contentsline {section}{\numberline {4.2}Simulaciones}{55}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Modelamiento}{58}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Intensidad}{58}{subsection.4.3.1}%
+\contentsline {subsubsection}{Homogeneidad de riesgo}{58}{section*.53}%
+\contentsline {subsection}{\numberline {4.3.2}Riesgo}{60}{subsection.4.3.2}%
+\contentsline {section}{\numberline {4.4}Infererencia}{61}{section.4.4}%
+\contentsline {section}{\numberline {4.5}Implementación}{63}{section.4.5}%
+\contentsline {chapter}{\numberline {V}CONCLUSIONES Y RECOMENDACIONES}{67}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Conclusiones}{67}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Recomendaciones}{69}{section.5.2}%
+\contentsline {chapter}{REFERENCIA BIBLIOGRÁFICA}{70}{chapter*.65}%
+\contentsline {chapter}{Anexos}{73}{section*.66}%
+\contentsline {chapter}{\numberline {A}Aspectos legales}{74}{appendix.Alph1}%
+\contentsline {chapter}{\numberline {B}Códigos empleados para el desarrollo de la tesis}{75}{appendix.Alph2}%

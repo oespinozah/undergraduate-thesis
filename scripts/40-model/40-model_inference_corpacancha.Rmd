@@ -1,0 +1,83 @@
+---
+title: "40-model_inference"
+output: html_document
+---
+```{r}
+git_path <- function() {
+  system('git rev-parse --show-toplevel', intern = TRUE)
+}
+proj_path <- git_path()
+source(file.path(proj_path,"src","kml_df.R"))
+source(file.path(proj_path,"src","data_ppp.R"))
+source(file.path(proj_path,"src","win_ppp.R"))
+source(file.path(proj_path,"src","evaluate.R"))
+source(file.path(proj_path,"src","inference.R"))
+source(file.path(proj_path,"src","validation.R"))
+```
+
+## Leyendo la bases limpias y cargando los paquetes
+
+```{r}
+library(spatstat)
+library(sf)
+library(mgcv)
+library(splines)
+library(pROC)
+library(mgcv)
+library(caret)
+datos_consolidados <- read.csv(file.path(proj_path,
+                                         "data",
+                                         "processed",
+                                         "datos_consolidados.csv"))
+datos_virsel <- read.csv(file.path(proj_path,
+                                   "data",
+                                   "processed",
+                                   "datos_virsel.csv"))
+corpacancha_household <- readRDS(file.path(proj_path,"data","cleaned",
+                                           "corpacancha_household.kml"))
+corpacancha_household_df <- kml_df(corpacancha_household)
+win <- win_ppp(datos_consolidados,corpacancha_household_df)
+consolidados_ppp <- data_ppp(datos_consolidados,win)
+virsel_ppp <- data_ppp(datos_virsel,win)
+datos_virsel$virit_resultado_wb <- factor(as.numeric(datos_virsel$virit_resultado_wb == "positivo"),
+                                          labels = c("negativo","positivo"),levels = c(0,1))
+datos_virsel$sexpac <- factor(as.numeric(datos_virsel$sexpac == "masculino"),
+                              labels = c("femenino","masculino"),levels = c(0,1))
+datos_consolidados$sexpac <- factor(as.numeric(datos_consolidados$sexpac == "masculino"),
+                                    labels = c("femenino","masculino"),levels = c(0,1))
+datos_virsel$nperros_factor <- factor(datos_virsel$nperros)
+datos_consolidados$nperros_factor <- factor(datos_consolidados$nperros)
+```
+
+## Pesos
+
+```{r}
+w <- readRDS(file.path(proj_path,"data","processed","pesos_corpacancha.rds"))
+```
+
+## Particionamos en dos grupos
+
+```{r}
+set.seed(2021)
+inTrain <- createDataPartition(y = datos_virsel$virit_resultado_wb,p=0.7,list = FALSE)
+train <- datos_virsel[inTrain,]
+test <- datos_virsel[-inTrain,]
+```
+
+
+# Modelo
+
+```{r}
+modelo_full_w <- mgcv::gam(virit_resultado_wb~s(longitud,latitud,k=4,
+                                                by=sexpac) +
+                             s(edapac,k=8) + perros3 - 1,
+                           family = binomial(link="logit"),
+                           data=train,
+                           weights = w[inTrain])
+validation(modelo_full_w,train,test)
+```
+
+```{r}
+inferencia <- inference(modelo_full_w,train)
+inferencia
+```

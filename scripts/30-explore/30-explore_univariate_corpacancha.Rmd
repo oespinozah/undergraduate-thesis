@@ -1,0 +1,187 @@
+---
+title: "Análisis Exploratorio"
+output: html_document
+---
+
+```{r}
+git_path <- function() {
+  system('git rev-parse --show-toplevel', intern = TRUE)
+}
+proj_path <- git_path()
+```
+
+## Leyendo la bases limpias y cargando los paquetes
+
+```{r}
+library(ggplot2)
+proj_path <- git_path()
+datos_consolidados <- read.csv(file.path(proj_path,
+                                         "data",
+                                         "processed",
+                                         "datos_consolidados.csv"))
+datos_virsel <- read.csv(file.path(proj_path,
+                                   "data",
+                                   "processed",
+                                   "datos_virsel.csv"))
+datos_virsel$virit_resultado_wb <- factor(as.numeric(datos_virsel$virit_resultado_wb == "positivo"),
+                                          labels = c("negativo","positivo"),levels = c(0,1))
+datos_virsel$sexpac <- factor(as.numeric(datos_virsel$sexpac == "masculino"),
+                              labels = c("femenino","masculino"),levels = c(0,1))
+datos_consolidados$sexpac <- factor(as.numeric(datos_consolidados$sexpac == "masculino"),
+                                    labels = c("femenino","masculino"),levels = c(0,1))
+datos_virsel$nperros_factor <- factor(datos_virsel$nperros)
+datos_consolidados$nperros_factor <- factor(datos_consolidados$nperros)
+```
+
+```{r}
+
+pwr::pwr.p.test(h = 0.1,
+                n = 196,
+                sig.level = 0.05,
+                power = NULL, 
+                alternative = "two.sided"
+                )
+
+```
+
+
+
+```{r}
+
+table(datos_virsel$sexpac)
+mean(datos_virsel$edapac)
+1.96*sd(datos_virsel$edapac)/sqrt(length(datos_virsel$edapac))
+table(datos_virsel$nperros)
+
+```
+
+
+
+## Analizamos la variable sexo
+
+```{r}
+table(datos_virsel$sexpac,datos_virsel$virit_resultado_wb)
+```
+
+
+
+```{r}
+#tgc <- summarySE(tg, measurevar="len", groupvars=c("supp","dose"))
+#>   supp dose  N   len       sd        se       ci
+table(datos_virsel$sexpac,datos_virsel$virit_resultado_wb)[1,1]
+tabla_sexo <- matrix(nrow=2,ncol = 3)
+tabla_sexo <- as.data.frame(tabla_sexo)
+tabla_sexo[,1] <- c("Femenino", "Masculino")
+tabla_sexo[,2] <- table(datos_virsel$sexpac,datos_virsel$virit_resultado_wb)[,2]/
+  table(datos_virsel$sexpac)
+tabla_sexo[,3] <- qnorm(0.975)*
+  sqrt(tabla_sexo[,2]*(1-tabla_sexo[,2])/table(datos_virsel$sexpac)*
+         ((table(datos_consolidados$sexpac)-table(datos_virsel$sexpac))/
+            table(datos_consolidados$sexpac)))
+names(tabla_sexo) <- c("sexo","p","ci")
+tabla_sexo$sexo <- factor(tabla_sexo$sexo)
+# Use 95% confidence intervals instead of SEM
+ggplot(tabla_sexo, aes(x=sexo, y=p, fill = sexo)) + 
+  geom_bar(position=position_dodge(),
+           stat="identity",
+           colour="black", # Use black outlines,
+           size=.3) +      # Thinner lines
+  xlab("Sexo") +
+  ylab("") +
+  scale_fill_manual(values=c("#FFFF00", "#0000FF"))+  
+  geom_errorbar(aes(ymin=p-ci, ymax=p+ci),
+                size=.3,    # Thinner lines
+                width=.2,
+                position=position_dodge(.9)) +
+  xlab("Sexo") +
+  ylab("Prevalencia") +
+  scale_fill_hue(name="Sexo", # Legend label, use darker colors
+                 breaks=c("F", "M"),
+                 labels=c("Femenino", "Masculino")) +
+  #ggtitle("Nivel de prevalencia de hidatidosis por sexo") +
+  #scale_y_continuous(breaks=0:20*4) +
+  theme_bw()
+```
+
+```{r}
+glm_sexo <- glm(virit_resultado_wb ~ sexpac,
+                data = datos_virsel,
+                family = binomial(link = logit))
+summary(glm_sexo)
+exp(cbind(coef(glm_sexo), confint(glm_sexo)))  
+```
+
+## Analizamos la variable edad
+
+```{r}
+mean(datos_virsel$edapac[datos_virsel$virit_resultado_wb=="positivo"])
+qnorm(0.975)*sd(datos_virsel$edapac[datos_virsel$virit_resultado_wb=="positivo"])/
+  sqrt(length(datos_virsel$edapac[datos_virsel$virit_resultado_wb=="positivo"]))
+mean(datos_virsel$edapac[datos_virsel$virit_resultado_wb=="negativo"])
+qnorm(0.975)*sd(datos_virsel$edapac[datos_virsel$virit_resultado_wb=="negativo"])/
+  sqrt(length(datos_virsel$edapac[datos_virsel$virit_resultado_wb=="negativo"]))
+glm_edad <- glm(virit_resultado_wb ~ edapac,
+                data = datos_virsel,
+                family = binomial(link = logit))
+summary(glm_edad)
+exp(cbind(coef(glm_edad), confint(glm_edad)))
+```
+
+
+## Analizamos la variable perros
+
+```{r}
+table(datos_virsel$nperros,datos_virsel$virit_resultado_wb)
+glm_nperros_factor <- glm(virit_resultado_wb ~ nperros_factor,
+                          data = datos_virsel,
+                          family = binomial(link = logit))
+glm_perros3 <- glm(virit_resultado_wb ~ perros3,
+                   data = datos_virsel,
+                   family = binomial(link = logit))
+summary(glm_nperros_factor)
+exp(cbind(coef(glm_nperros_factor), confint(glm_nperros_factor)))
+summary(glm_perros3)
+exp(cbind(coef(glm_perros3), confint(glm_perros3)))
+```
+
+
+
+```{r}
+#tgc <- summarySE(tg, measurevar="len", groupvars=c("supp","dose"))
+#>   supp dose  N   len       sd        se       ci
+table(datos_virsel$perros3,datos_virsel$virit_resultado_wb)[1,1]
+tabla_perros3 <- matrix(nrow=2,ncol = 3)
+tabla_perros3 <- as.data.frame(tabla_perros3)
+tabla_perros3[,1] <- c("Al menos 3 perros", "Menos de 3 perros")
+tabla_perros3[,2] <- table(datos_virsel$perros3,datos_virsel$virit_resultado_wb)[,2]/
+  table(datos_virsel$perros3)
+tabla_perros3[,3] <- qnorm(0.975)*
+  sqrt(tabla_perros3[,2]*(1-tabla_perros3[,2])/table(datos_virsel$perros3)*
+         ((table(datos_consolidados$perros3)-table(datos_virsel$perros3))/
+            table(datos_consolidados$perros3)))
+names(tabla_perros3) <- c("perros3","p","ci")
+tabla_perros3$perros3 <- factor(tabla_perros3$perros3)
+# Use 95% confidence intervals instead of SEM
+ggplot(tabla_perros3, aes(x=perros3, y=p, fill=perros3)) + 
+  geom_bar(position=position_dodge(),
+           stat="identity",
+           colour="black", # Use black outlines,
+           size=.3) +      # Thinner lines
+  scale_fill_manual(values=c("#FFFF00", "#0000FF"))+  
+  geom_errorbar(aes(ymin=p-ci, ymax=p+ci),
+                size=.3,    # Thinner lines
+                width=.2,
+                position=position_dodge(.9)) +
+  geom_errorbar(aes(ymin=p-ci, ymax=p+ci),
+                size=.3,    # Thinner lines
+                width=.2,
+                position=position_dodge(.9)) +
+  xlab("Tenencia de perros") +
+  ylab("Prevalencia") +
+  scale_fill_hue(name="perros3", # Legend label, use darker colors
+                 breaks=c("0 - 2", "3 - más"),
+                 labels=c("De 0 a 2 perros", "De 3 perros a más")) +
+  #ggtitle("Nivel de prevalencia de hidatidosis por sexo") +
+  #scale_y_continuous(breaks=0:20*4) +
+  theme_bw()
+```

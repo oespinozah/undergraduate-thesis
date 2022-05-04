@@ -1,0 +1,105 @@
+---
+title: "30-explore_coordinates_canchayllo"
+output: html_document
+---
+
+
+```{r}
+library(ggplot2)
+library(sf)
+library(lwgeom)
+library(raster)
+library(maptools)
+library(spatstat)
+library(PrevMap)
+```
+
+
+```{r}
+git_path <- function() {
+  system('git rev-parse --show-toplevel', intern = TRUE)
+}
+proj_path <- git_path()
+source(file.path(proj_path,"src","kml_df.R"))
+source(file.path(proj_path,"src","data_ppp.R"))
+source(file.path(proj_path,"src","win_ppp.R"))
+```
+
+## Leyendo la bases limpias y cargando los paquetes
+
+```{r}
+datos_consolidados <- readRDS(file.path(proj_path, "data", "processed","datos_canchayllo_poblacion.rds"))
+datos_muestra <- readRDS(file.path(proj_path,"data","processed","datos_canchayllo_muestra.rds"))
+canchayllo_household <- readRDS(file.path(proj_path,"data","cleaned","canchayllo_household.rds"))
+canchayllo_household_df <- kml_df(canchayllo_household)
+win <- win_ppp(datos_consolidados,canchayllo_household_df)
+consolidados_ppp <- data_ppp(datos_consolidados,win)
+muestra_ppp <- data_ppp(datos_muestra,win)
+
+summary(datos_muestra$resultado)
+p <- 19/127
+
+1.96*sqrt(p*(1-p)/(126)*(327-127)/327)
+
+```
+
+
+```{r}
+casa <- canchayllo_household_df
+participacion <- as.data.frame(cbind(names(table(datos_consolidados$ncasa, datos_consolidados$participa)[
+  table(datos_consolidados$ncasa, datos_consolidados$participa)[,2] > 0 ,2]),3))
+names(participacion) <- c("ncasa","participa")
+casa <- merge(casa,participacion,by="ncasa",all.x=TRUE)
+casa[is.na(casa$participa),4] <- 2
+plot(casa$longitud,casa$latitud,pch = 20,xlab="",ylab="",cex=1.25,
+     #ylim=c(8743500,8743800),
+     col= casa$participa)
+#plot(centro_salud, pch=18, cex=2, col=5, add=TRUE)
+grid()
+```
+
+
+```{r}
+plot(density(consolidados_ppp),main=NULL)
+contour(density(consolidados_ppp), las=1, main=NULL,add=TRUE)
+#plot(centro_salud, pch=18, cex=2, col="#FFFFFF", add=TRUE)
+```
+
+
+```{r}
+plot(density(muestra_ppp),main=NULL)
+contour(density(muestra_ppp), las=1, main=NULL,add=TRUE)
+#plot(centro_salud, pch=18, cex=2, col="#FFFFFF", add=TRUE)
+```
+
+
+```{r}
+plot(density(muestra_ppp)/density(consolidados_ppp),main=NULL)
+contour(density(muestra_ppp)/density(consolidados_ppp), las=1, main=NULL,add=TRUE)
+#plot(centro_salud, pch=18, cex=2, col="#FFFFFF", add=TRUE)
+```
+
+
+```{r}
+datos_posi_ppp <- data_ppp(datos_muestra[datos_muestra$resultado=="positivo",],win)
+datos_nega_ppp <- data_ppp(datos_muestra[datos_muestra$resultado=="negativo",],win)
+```
+
+```{r}
+plot(density(datos_posi_ppp)/density(muestra_ppp),main=NULL)
+contour(density(datos_posi_ppp)/density(muestra_ppp), las=1, main=NULL,add=TRUE)
+```
+
+
+```{r}
+plot(density(datos_posi_ppp)/ (density(datos_posi_ppp) +  density(datos_nega_ppp)),main=NULL)
+contour(density(datos_posi_ppp)/ (density(datos_posi_ppp) +  density(datos_nega_ppp)), las=1, main=NULL,add=TRUE)
+```
+
+```{r}
+plot(density(datos_posi_ppp)/ (density(datos_posi_ppp) +  0.543 * density(datos_nega_ppp)),main=NULL)
+contour(density(datos_posi_ppp)/ (density(datos_posi_ppp) +  0.543 * density(datos_nega_ppp)), las=1, main=NULL,add=TRUE)
+```
+
+
+

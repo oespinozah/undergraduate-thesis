@@ -1,0 +1,242 @@
+---
+title: "Simulación 000"
+output: html_document
+---
+
+
+```{r, results='hide', message=FALSE, warning=FALSE}
+git_path <- function() {
+  system('git rev-parse --show-toplevel', intern = TRUE)
+}
+proj_path <- git_path()
+source(file.path(proj_path,"src","split_quadrant.R"))
+source(file.path(proj_path,"src","evaluate.R"))
+source(file.path(proj_path,"src","inference.R"))
+```
+
+
+```{r, results='hide', message=FALSE, warning=FALSE}
+library(sf)
+library(spatstat)
+library(fields)
+library(mgcv)
+library(psych)
+library(splines)
+library(caret)
+```
+
+
+```{r}
+lambda_fun <- function(x,y){
+  return(rep(2,length(x)))}
+theta_fun <- function(x,y){
+  return(rep(0.25,length(x)))}
+pi_fun <- function(x,y){
+  return(rep(0.35,length(x)))}
+```
+
+
+```{r}
+lambda_theta_fun <- function(x,y){
+  return( lambda_fun(x,y) * theta_fun(x,y))}
+lambda_pi_fun <- function(x,y){
+  return( lambda_fun(x,y) * pi_fun(x,y))}
+lambda_theta_pi_fun <- function(x,y){
+  return( lambda_fun(x,y) * theta_fun(x,y) * pi_fun(x,y))}
+```
+
+
+```{r}
+set.seed(123)
+win <- owin(xrange = c(0, 10), yrange = c(0, 10))
+spp <- rpoispp(lambda = 2, win = win)
+props <- theta_fun(spp$x,spp$y)
+marks_spp <- factor(sapply(props, function(x) rbinom(1, 1, x)),
+                    labels = c("negativo","positivo"),levels = c(0,1))
+#marks(spp) <- marks_spp
+props <- pi_fun(spp$x,spp$y)
+props_sample <- sapply(props, function(x) rbinom(1, 1, x)) == 1
+spp_sample <- spp[props_sample]
+```
+
+# Determinación de los pesos
+
+## Intensidad
+### Intensidad Poblacional
+
+```{r}
+set.seed(1234)
+sq <- sample(1:25,10,replace=F)
+train_spp <- split_quadrant(spp,sq)
+```
+
+
+```{r}
+qua <- quadrats(spp, 5, 5)
+k_base <- c()
+ecm_nB_train <- c()
+ecm_nB_test <- c()
+for (j in 2:50) {
+    train_fit <- ppm(train_spp~ s(x,y,k=j), use.gam=TRUE)
+    res2e <- residuals(train_fit)
+    resQ <- integral(res2e, qua)
+    k_base <- cbind(k_base,j)
+    ecm_nB_train <- cbind(ecm_nB_train,mean(resQ[-sq]^2))
+    ecm_nB_test <- cbind(ecm_nB_test,
+                         mean((quadratcount(spp,
+                                            nx=5, ny=5)[sq] + resQ[sq])^2))
+}
+```
+
+```{r}
+plot(k_base,ecm_nB_train,ylim = c(0,60),type = "l",col="red",
+     xlab="N° de funciones base", ylab="Residuales")
+points(k_base,ecm_nB_test,type = "l",col="blue")
+grid()
+```
+
+#### Menor número de funciones base que genera el menor error en el grupo test
+
+```{r}
+k_base[which.min(ecm_nB_test)]
+```
+
+
+#### Ajustamos la función de intesidad con el número de funciones base optimo
+
+```{r}
+k_base <- k_base[which.min(ecm_nB_test)]
+lambda_p_fit <- ppm(train_spp~s(x,y,k= k_base),
+                             use.gam=TRUE)
+```
+
+
+####  Logaritmo de lambda poblacional
+
+```{r}
+loglambda_p <- log(predict(lambda_p_fit,
+                           locations=data.frame(x=spp_sample$x,
+                                                y=spp_sample$y)))
+```
+
+
+### Intensidad muestral
+
+```{r}
+set.seed(1234)
+sq <- sample(1:25,10,replace=F)
+train_spp <- split_quadrant(spp_sample,sq)
+```
+
+```{r}
+qua <- quadrats(spp_sample, 5, 5)
+k_base <- c()
+ecm_nB_train <- c()
+ecm_nB_test <- c()
+for (j in 2:50) {
+  train_fit <- ppm(train_spp~ s(x,y,k=j),
+                        offset=loglambda_p,
+                        use.gam=TRUE)
+  res2e <- residuals(train_fit)
+  resQ <- integral(res2e, qua)
+  k_base <- cbind(k_base,j)
+  ecm_nB_train <- cbind(ecm_nB_train,mean(resQ[-sq]^2))
+  ecm_nB_test <- cbind(ecm_nB_test,
+                       mean((quadratcount(train_spp,
+                                          nx=5, ny=5)[sq] + resQ[sq])^2))
+}
+```
+
+```{r}
+plot(k_base,ecm_nB_train,ylim = c(0,10),type = "l",col="red",
+     xlab="N° de funciones base", ylab="Residuales")
+points(k_base,ecm_nB_test,type = "l",col="blue")
+grid()
+```
+
+#### Menor número de funciones base que genera el menor error en el grupo test
+
+```{r}
+k_base[which.min(ecm_nB_test)]
+```
+
+#### Ajustamos la función de intesidad con el número de funciones base optimo
+
+```{r}
+k_base <- k_base[which.min(ecm_nB_test)]
+lambda_fit <- ppm(train_spp~s(x,y,k= k_base),use.gam=TRUE)
+```
+
+####  Logaritmo de lambda muestral
+
+```{r}
+loglambda <- log(predict(lambda_fit,
+                           locations=data.frame(x=spp_sample$x,
+                                                y=spp_sample$y)))
+```
+
+#### Determinando los pesos
+
+```{r}
+w <- exp(loglambda_p-loglambda)
+```
+
+
+```{r}
+marks(spp) <- marks_spp
+spp_sample <- spp[props_sample]
+```
+
+
+```{r}
+sum(spp_sample$marks == "positivo")/spp_sample$n
+```
+
+
+```{r}
+set.seed(2021)
+inTrain <- createDataPartition(y = spp_sample$marks,p=0.7,list = FALSE)
+train <- spp_sample[inTrain,]
+test <- spp_sample[-inTrain,]
+w_train <- w[inTrain]
+model <- mgcv::gam(marks~s(x,y),family = binomial(link="logit"), data = train)
+model_w <- mgcv::gam(marks~s(x,y),family = binomial(link="logit"), data = train, weights =  w_train)
+```
+
+
+```{r}
+pROC::roc(train$marks,predict(model))$auc
+pROC::coords(pROC::roc(train$marks,predict(model)),"best", best.method="youden")$specificity
+pROC::coords(pROC::roc(train$marks,predict(model)),"best", best.method="youden")$sensitivity
+pROC::roc(test$marks,predict(model, newdata = test))$auc
+pROC::coords(pROC::roc(test$marks,predict(model, newdata = test)),"best", best.method="youden")$specificity
+pROC::coords(pROC::roc(test$marks,predict(model, newdata = test)),"best", best.method="youden")$sensitivity
+```
+
+
+```{r}
+pROC::roc(train$marks,predict(model_w))$auc
+pROC::coords(pROC::roc(train$marks,predict(model_w)),"best", best.method="youden")$specificity
+pROC::coords(pROC::roc(train$marks,predict(model_w)),"best", best.method="youden")$sensitivity
+pROC::roc(test$marks,predict(model_w, newdata = test))$auc
+pROC::coords(pROC::roc(test$marks,predict(model_w, newdata = test)),"best", best.method="youden")$specificity
+pROC::coords(pROC::roc(test$marks,predict(model_w, newdata = test)),"best", best.method="youden")$sensitivity
+```
+
+
+```{r}
+mycoords <- pROC::coords(pROC::roc(train$marks,predict(model_w, newdata = train)),"all")
+plot(exp(mycoords[,"threshold"]), mycoords[,"specificity"], type="l", 
+     col="red", xlab="Cutoff", ylab="Performance",xlim = c(-0.5,2),ylim = c(0.5,1))
+lines(mycoords[,"threshold"], mycoords[,"sensitivity"], type="l", col="blue")
+legend(0.5, 0.7, c("Specificity", "Sensitivity"), 
+       col=c("red", "blue"), lty=1)
+best.coords <- pROC::coords(pROC::roc(train$marks,predict(model_w, newdata = train)),"best", best.method="youden")
+abline(v=best.coords["threshold"], lty=2, col="grey")
+abline(h=best.coords["specificity"], lty=2, col="red")
+abline(h=best.coords["sensitivity"], lty=2, col="blue")
+```
+
+
+
+

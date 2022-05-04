@@ -1,0 +1,38 @@
+\chapter{CONCLUSIONES Y RECOMENDACIONES}
+
+\section{Conclusiones}
+
+%\subsection{Respecto a los datos de la enfermedad}
+
+Durante el análisis de las simulaciones se encontraron diferencias observables entre la distribución de la prevalencia estimada y la corregida. No obstante, y tal como se hizo mención en la sección de resultados, en un porcentaje notorio (más del 15\% en más de un escenario) el método propuesto para corregir la prevalencia obtuvo un resultado más cercano al real. En ese sentido, y considerando que estas simulaciones solo consideraron la componente espacial en la variabilidad de los datos y no otras covariables que permitan explicar su comportamiento, se concluyó de esta forma en que por el momento no existía la suficiente evidencia estadística que permita rechazar la hipótesis de que el método propuesto por lo general estima de una mejor forma la prevalencia que el método tradicional. \\
+Por otro lado, de acuerdo a los resultados obtenidos en la prueba de Monte Carlo para la muestra correspondiente a la primera intervención en Corpacancha (la muestra no proviene de un muestreo totalmente aleatorio a nivel especial), se conocía que a causa de la no homogeneidad del riesgo espacial a ser seleccionados en la muestra era necesario utilizar un método que integre el factor espacial en el proceso de estimación de la prevalencia. Pese a los resultados obtenidos en el estudio del método planteado a través de las simulaciones, se aplicó con los datos reales. El método estudiado para corregir la prevalencia en el primer estudio generó resultados coherentes en relación a lo que el segundo estudio pudo obtener. En base a esto, se concluyó que la prevalencia del primer estudio (0.241) estuvo sobreestimada. El empleo del método presentado en esta investigación permitió poder estimar esta prevalencia de forma correcta al corregir el sesgo de selección. Al trabajar con la información recolectada en Canchayllo se determinó, en base a la prueba de Monte Carlo, un sesgo en la selección a nivel espacial, por lo que fue necesario emplear también el método propuesto para corregir con ello la prevalencia y el riesgo espacial a la enfermedad. Así, se concluyó que esta prevalencia se encontrada subestimada (0.245) debido al sesgo.\\
+Durante la comparación de los modelos, se pudo observar que añadir el factor de ponderación \textit{w} por sí solo no obtenía una mejora en las métricas de ajuste. Por lo que fue necesario que este sea empleado en conjunto con los factores de riesgo. Esto evidenciaría la necesidad de no depender solo del análisis espacial al momento de buscar explicar la variabilidad de la información; sino también de la información sociodemográfica epidemiológica de los participantes del estudio.\\
+
+%Por otro lado, durante el proceso de simulación, se obtuvieron resultados que debían de ser contrastados con lo optenido en el análisis de los datos reales para poder dar una conclusión correcta.
+
+
+%razón por la cual en muchos casos, los modelos ajustados no tenían métricas de ajuste adecuadas.
+
+
+%Faltaría añadir la discución de cómo estos resultado repercuten en la población
+
+
+\newpage
+\section{Recomendaciones}
+
+Considerando lo planteando en la Sección \ref{enfteocon} y en base a las conclusiones presentadas, se recomienda que en estudios posteriores se plantee una prueba estadística que determine de forma objetiva el empleo de una metodología de corrección de sesgo espacial como la presentada. Para ello, la prueba debe estar vinculada al concepto de si el valor estimado de la prevalencia es insesgado y si el posible sesgo de selección se encuentra relacionado con el factor espacial u otra covariable. En este sentido, la prueba deberá evaluar si se rechaza o no la hipótesis nula de que la proporción de riesgo (PR) de la enfermedad entre el grupo seleccionado y el no seleccionado es 1.\\
+%\begin{center}
+%    \begin{itemize}
+%        \item[] $\mathrm{H}_0: \;\mathrm{PR}\; =\; \cfrac{p(Y=1|X=1)}{p(Y=1|X=0)} \; = \; 1$
+%        \item[] $\mathrm{H}_1: \;\mathrm{PR}\; =\; \cfrac{p(Y=1|X=1)}{p(Y=1|X=0)} \; \neq \; 1$
+%    \end{itemize}
+%\end{center}
+De igual forma, se recomienda continuar en el estudio del método en sí bajo otros enfoques. En ello se tendría que analizar su comportamiendo al añadir covariables como factores de riesgo en diversas condiciones y distribuciones de los datos que sean distintas a las presentadas. En ese sentido, se podrá determinar los criterios mediantes los cuales el método pueda ser generalizado en estudios completamente diferentes. Con ello también poder desarrollar una regla de decisión que permita considerar invalida la muestra, basándose en la magnitud del sesgo de selección presente en ella.\\
+Finalmente, también se recomienda hacer un estudio de impacto del método propuesto para determinar su viabilidad y su capacidad de implementabilidad en estudios epidemiológicos. Por ello se consideraría estudiar la rentabilidad del método, así como la importancia de su uso en el control, prevención y erradicación de enfermedades.
+
+%\newpage
+
+%\subsection{Implementación}
+
+
+

@@ -1,0 +1,670 @@
+\begin{thebibliography}{}
+
+\bibitem [\protect \citeauthoryear {%
+Baddeley%
+, Rubak%
+\BCBL {}\ \BBA {} Turner%
+}{%
+Baddeley%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2015}}%
+}]{%
+baddeley2015spatial}
+\APACinsertmetastar {%
+baddeley2015spatial}%
+\begin{APACrefauthors}%
+Baddeley, A.%
+, Rubak, E.%
+\BCBL {}\ \BBA {} Turner, R.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2015}.
+\newblock
+\APACrefbtitle {Spatial point patterns: methodology and applications with R}
+  {Spatial point patterns: methodology and applications with r}.
+\newblock
+\APACaddressPublisher{}{CRC press}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Bailly%
+, Daur{\`e}s%
+, Dunais%
+\BCBL {}\ \BBA {} Pradier%
+}{%
+Bailly%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2015}}%
+}]{%
+bailly2015bayesian}
+\APACinsertmetastar {%
+bailly2015bayesian}%
+\begin{APACrefauthors}%
+Bailly, L.%
+, Daur{\`e}s, J\BPBI P.%
+, Dunais, B.%
+\BCBL {}\ \BBA {} Pradier, C.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2015}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Bayesian estimation of a cancer population by
+  capture-recapture with individual capture heterogeneity and small sample}
+  {Bayesian estimation of a cancer population by capture-recapture with
+  individual capture heterogeneity and small sample}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{BMC medical research methodology}{15}{}{39}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Braeye%
+\ \protect \BOthers {.}}{%
+Braeye%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2016}}%
+}]{%
+braeye2016capture}
+\APACinsertmetastar {%
+braeye2016capture}%
+\begin{APACrefauthors}%
+Braeye, T.%
+, Verheagen, J.%
+, Mignon, A.%
+, Flipse, W.%
+, Pierard, D.%
+, Huygen, K.%
+\BDBL {}Hens, N.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2016}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Capture-recapture estimators in epidemiology with
+  applications to pertussis and pneumococcal invasive disease surveillance}
+  {Capture-recapture estimators in epidemiology with applications to pertussis
+  and pneumococcal invasive disease surveillance}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{PloS one}{11}{8}{e0159832}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Celentano%
+, Mhs%
+\BCBL {}\ \BBA {} Szklo%
+}{%
+Celentano%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2019}}%
+}]{%
+celentano2019gordis}
+\APACinsertmetastar {%
+celentano2019gordis}%
+\begin{APACrefauthors}%
+Celentano, D\BPBI D.%
+, Mhs, S.%
+\BCBL {}\ \BBA {} Szklo, M.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2019}.
+\newblock
+\APACrefbtitle {Gordis. Epidemiolog{\'\i}a} {Gordis. epidemiolog{\'\i}a}.
+\newblock
+\APACaddressPublisher{}{Elsevier}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Davelois%
+, Escalante%
+\BCBL {}\ \BBA {} Jara%
+}{%
+Davelois%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2016}}%
+}]{%
+davelois2016rendimiento}
+\APACinsertmetastar {%
+davelois2016rendimiento}%
+\begin{APACrefauthors}%
+Davelois, K.%
+, Escalante, H.%
+\BCBL {}\ \BBA {} Jara, C.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2016}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Rendimiento diagn{\'o}stico del Western Blot para
+  detectar simult{\'a}neamente anticuerpos en pacientes con cisticercosis,
+  hidatidosis y fascioliasis humana} {Rendimiento diagn{\'o}stico del western
+  blot para detectar simult{\'a}neamente anticuerpos en pacientes con
+  cisticercosis, hidatidosis y fascioliasis humana}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Revista peruana de medicina experimental y salud
+  publica}{33}{}{616--624}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Ellis%
+}{%
+Ellis%
+}{%
+{\protect \APACyear {2010}}%
+}]{%
+ellis2010essential}
+\APACinsertmetastar {%
+ellis2010essential}%
+\begin{APACrefauthors}%
+Ellis, P\BPBI D.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2010}.
+\newblock
+\APACrefbtitle {The essential guide to effect sizes: Statistical power,
+  meta-analysis, and the interpretation of research results} {The essential
+  guide to effect sizes: Statistical power, meta-analysis, and the
+  interpretation of research results}.
+\newblock
+\APACaddressPublisher{}{Cambridge university press}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Friedman%
+, Hastie%
+\BCBL {}\ \BBA {} Tibshirani%
+}{%
+Friedman%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2001}}%
+}]{%
+friedman2001elements}
+\APACinsertmetastar {%
+friedman2001elements}%
+\begin{APACrefauthors}%
+Friedman, J.%
+, Hastie, T.%
+\BCBL {}\ \BBA {} Tibshirani, R.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2001}.
+\newblock
+\APACrefbtitle {The elements of statistical learning} {The elements of
+  statistical learning}\ (\BVOL~1)\ (\BNUM~10).
+\newblock
+\APACaddressPublisher{}{Springer series in statistics New York}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+general assembly of the world~medical association%
+\ \protect \BOthers {.}}{%
+general assembly of the world~medical association%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2014}}%
+}]{%
+general2014world}
+\APACinsertmetastar {%
+general2014world}%
+\begin{APACrefauthors}%
+general assembly of the world~medical association%
+\BCBT {}\ \BOthersPeriod {.}
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2014}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {World Medical Association Declaration of Helsinki:
+  ethical principles for medical research involving human subjects.} {World
+  medical association declaration of helsinki: ethical principles for medical
+  research involving human subjects.}{\BBCQ}
+\newblock
+\APACjournalVolNumPages{The Journal of the American College of
+  Dentists}{81}{3}{14}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Giri%
+\ \BBA {} Parija%
+}{%
+Giri%
+\ \BBA {} Parija%
+}{%
+{\protect \APACyear {2012}}%
+}]{%
+giri2012review}
+\APACinsertmetastar {%
+giri2012review}%
+\begin{APACrefauthors}%
+Giri, S.%
+\BCBT {}\ \BBA {} Parija, S\BPBI C.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2012}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {A review on diagnostic and preventive aspects of cystic
+  echinococcosis and human cysticercosis} {A review on diagnostic and
+  preventive aspects of cystic echinococcosis and human cysticercosis}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Tropical parasitology}{2}{2}{99}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Kebede%
+, Hagos%
+, Girma%
+\BCBL {}\ \BBA {} Lobago%
+}{%
+Kebede%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2009}}%
+}]{%
+kebede2009echinococcosis}
+\APACinsertmetastar {%
+kebede2009echinococcosis}%
+\begin{APACrefauthors}%
+Kebede, W.%
+, Hagos, A.%
+, Girma, Z.%
+\BCBL {}\ \BBA {} Lobago, F.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2009}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Echinococcosis/hydatidosis: its prevalence, economic and
+  public health significance in Tigray region, North Ethiopia}
+  {Echinococcosis/hydatidosis: its prevalence, economic and public health
+  significance in tigray region, north ethiopia}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Tropical Animal Health and
+  Production}{41}{6}{865--871}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Larrieu%
+, Belloto%
+, ARAMBULO~III%
+\BCBL {}\ \BBA {} Tamayo%
+}{%
+Larrieu%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2004}}%
+}]{%
+larrieu2004echinococcosis}
+\APACinsertmetastar {%
+larrieu2004echinococcosis}%
+\begin{APACrefauthors}%
+Larrieu, E.%
+, Belloto, A.%
+, ARAMBULO~III, P.%
+\BCBL {}\ \BBA {} Tamayo, H.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2004}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Echinococcosis qu{\'\i}stica: epidemiolog{\'\i}a y
+  control en Am{\'e}rica del Sur} {Echinococcosis qu{\'\i}stica:
+  epidemiolog{\'\i}a y control en am{\'e}rica del sur}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Parasitolog{\'\i}a latinoamericana}{59}{1-2}{82--89}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+P.~Moro%
+\ \BBA {} Schantz%
+}{%
+P.~Moro%
+\ \BBA {} Schantz%
+}{%
+{\protect \APACyear {2009}}%
+}]{%
+moro2009echinococcosis}
+\APACinsertmetastar {%
+moro2009echinococcosis}%
+\begin{APACrefauthors}%
+Moro, P.%
+\BCBT {}\ \BBA {} Schantz, P\BPBI M.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2009}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Echinococcosis: a review} {Echinococcosis: a
+  review}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{International journal of Infectious
+  diseases}{13}{2}{125--133}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+P\BPBI L.~Moro%
+\ \protect \BOthers {.}}{%
+P\BPBI L.~Moro%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2011}}%
+}]{%
+moro2011economic}
+\APACinsertmetastar {%
+moro2011economic}%
+\begin{APACrefauthors}%
+Moro, P\BPBI L.%
+, Budke, C\BPBI M.%
+, Schantz, P\BPBI M.%
+, Vasquez, J.%
+, Santivañez, S\BPBI J.%
+\BCBL {}\ \BBA {} Villavicencio, J.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2011}{05}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Economic Impact of Cystic Echinococcosis in Peru}
+  {Economic impact of cystic echinococcosis in peru}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{PLOS Neglected Tropical Diseases}{5}{}{1-6}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+PAHO/WHO%
+}{%
+PAHO/WHO%
+}{%
+{\protect \APACyear {2017}}%
+}]{%
+PAHO}
+\APACinsertmetastar {%
+PAHO}%
+\begin{APACrefauthors}%
+PAHO/WHO.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2017}.
+\newblock
+\APACrefbtitle {Prevention and Control of Hydatidosis at Local Level: South
+  American Initiative for the Control and Surveillance of Cystic
+  Echinococcosis/Hydatidosis} {Prevention and control of hydatidosis at local
+  level: South american initiative for the control and surveillance of cystic
+  echinococcosis/hydatidosis}.
+\newblock
+\APACaddressPublisher{}{PANAFTOSA}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Pinsky%
+\ \BBA {} Karlin%
+}{%
+Pinsky%
+\ \BBA {} Karlin%
+}{%
+{\protect \APACyear {2010}}%
+}]{%
+pinsky2010introduction}
+\APACinsertmetastar {%
+pinsky2010introduction}%
+\begin{APACrefauthors}%
+Pinsky, M.%
+\BCBT {}\ \BBA {} Karlin, S.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2010}.
+\newblock
+\APACrefbtitle {An introduction to stochastic modeling} {An introduction to
+  stochastic modeling}.
+\newblock
+\APACaddressPublisher{}{Academic press}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Royle%
+, Chandler%
+, Sollmann%
+\BCBL {}\ \BBA {} Gardner%
+}{%
+Royle%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2014}}%
+}]{%
+Royle2014Spatial}
+\APACinsertmetastar {%
+Royle2014Spatial}%
+\begin{APACrefauthors}%
+Royle, J.%
+, Chandler, R.%
+, Sollmann, R.%
+\BCBL {}\ \BBA {} Gardner, B.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2014}.
+\newblock
+\APACrefbtitle {Spatial Capture-recapture} {Spatial capture-recapture}.
+\newblock
+\APACaddressPublisher{}{Academic Press}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Ruiz-Maya%
+\ \BBA {} Pliego%
+}{%
+Ruiz-Maya%
+\ \BBA {} Pliego%
+}{%
+{\protect \APACyear {2004}}%
+}]{%
+ruiz2004fundamentos}
+\APACinsertmetastar {%
+ruiz2004fundamentos}%
+\begin{APACrefauthors}%
+Ruiz-Maya, L.%
+\BCBT {}\ \BBA {} Pliego, F\BPBI J\BPBI M.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2004}.
+\newblock
+\APACrefbtitle {Fundamentos de inferencia estad{\'\i}stica} {Fundamentos de
+  inferencia estad{\'\i}stica}.
+\newblock
+\APACaddressPublisher{}{AC}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Santiva{\~n}ez%
+\ \protect \BOthers {.}}{%
+Santiva{\~n}ez%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2010}}%
+}]{%
+santivanez2010factores}
+\APACinsertmetastar {%
+santivanez2010factores}%
+\begin{APACrefauthors}%
+Santiva{\~n}ez, S\BPBI J.%
+, Naquira, C.%
+, Gavidia, C\BPBI M.%
+, Tello, L.%
+, Hernandez, E.%
+, Brunetti, E.%
+\BDBL {}Garcia, H\BPBI H.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2010}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Factores domiciliarios asociados con la presencia de
+  hidatidosis humana en tres comunidades rurales de Jun{\'\i}n, Per{\'u}}
+  {Factores domiciliarios asociados con la presencia de hidatidosis humana en
+  tres comunidades rurales de jun{\'\i}n, per{\'u}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Revista Peruana de Medicina Experimental y Salud
+  P{\'u}blica}{27}{}{498--505}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Sarkar%
+\ \protect \BOthers {.}}{%
+Sarkar%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2017}}%
+}]{%
+sarkar2017cystic}
+\APACinsertmetastar {%
+sarkar2017cystic}%
+\begin{APACrefauthors}%
+Sarkar, S.%
+, Roy, H.%
+, Saha, P.%
+, Sengupta, M.%
+, Sarder, K.%
+\BCBL {}\ \BBA {} Sengupta, M.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2017}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Cystic echinococcosis: a neglected disease at usual and
+  unusual locations} {Cystic echinococcosis: a neglected disease at usual and
+  unusual locations}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Tropical parasitology}{7}{1}{51}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Scheaffer%
+, Mendenhall%
+, Ott%
+\BCBL {}\ \BBA {} Gerow%
+}{%
+Scheaffer%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2011}}%
+}]{%
+scheaffer2006elementos}
+\APACinsertmetastar {%
+scheaffer2006elementos}%
+\begin{APACrefauthors}%
+Scheaffer, R.%
+, Mendenhall, W.%
+, Ott, L.%
+\BCBL {}\ \BBA {} Gerow, K\BPBI G.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2011}.
+\newblock
+\APACrefbtitle {Elementary Survey Sampling} {Elementary survey sampling}.
+\newblock
+\APACaddressPublisher{}{Cengage Learning}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Shaw%
+, Rushton%
+, Roth%
+\BCBL {}\ \BBA {} Torgerson%
+}{%
+Shaw%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2017}}%
+}]{%
+shaw2017dalys}
+\APACinsertmetastar {%
+shaw2017dalys}%
+\begin{APACrefauthors}%
+Shaw, A.%
+, Rushton, J.%
+, Roth, F.%
+\BCBL {}\ \BBA {} Torgerson, P\BPBI R.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2017}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {DALYs, dollars and dogs: how best to analyse the
+  economics of controlling zoonoses.} {Dalys, dollars and dogs: how best to
+  analyse the economics of controlling zoonoses.}{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Revue scientifique et technique (International Office
+  of Epizootics)}{36}{1}{147--161}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Wang%
+}{%
+Wang%
+}{%
+{\protect \APACyear {2001}}%
+}]{%
+wang2001maximum}
+\APACinsertmetastar {%
+wang2001maximum}%
+\begin{APACrefauthors}%
+Wang, S\BPBI X.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2001}.
+\unskip\
+\newblock
+\APACrefbtitle {Maximum weighted likelihood estimation} {Maximum weighted
+  likelihood estimation}\ \APACtypeAddressSchool {\BUPhD}{}{}.
+\unskip\
+\newblock
+\APACaddressSchool {}{University of British Columbia}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+WHO%
+}{%
+WHO%
+}{%
+{\protect \APACyear {2019}}%
+}]{%
+who2020}
+\APACinsertmetastar {%
+who2020}%
+\begin{APACrefauthors}%
+WHO.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2019}{}{}.
+\newblock
+\APACrefbtitle {Equinococosis.} {Equinococosis.}
+\newblock
+\APAChowpublished
+  {{https://www.who.int/es/news-room/fact-sheets/detail/echinococcosis}}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Wood%
+}{%
+Wood%
+}{%
+{\protect \APACyear {2020}}%
+}]{%
+mgcv}
+\APACinsertmetastar {%
+mgcv}%
+\begin{APACrefauthors}%
+Wood, S.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2020}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Mixed GAM Computation Vehicle with Automatic Smoothness
+  Estimation} {Mixed gam computation vehicle with automatic smoothness
+  estimation}{\BBCQ}\ [\bibcomputersoftwaremanual].
+\newblock
+\APACrefnote{R package version 1.8-33}
+\PrintBackRefs{\CurrentBib}
+
+\end{thebibliography}
