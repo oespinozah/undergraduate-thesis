@@ -15,4 +15,3 @@ De igual forma, también se presenta el
 
 Dada la privacidad de los datos, estos no se encuentran cargados en el repositorio
 
-Dudas y preguntas, contactarse vía correo a oespinozah@uni.pe con el asunto "Tesis de Pre-Grado"
